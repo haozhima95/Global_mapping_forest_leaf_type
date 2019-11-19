@@ -1,0 +1,288 @@
+---
+title: "wdpa_biome_aggregation"
+author: "Haozhi Ma"
+date: "11/19/2019"
+output: html_document
+---
+
+## WDPA biome aggregation
+
+#### This script is used for aggregating different biomes for further machine learning grid search by biomes.
+
+
+Read the datasets and check the sample size
+
+```{R}
+namelist<-c(1,2,4,5,6,7,8,9,10,11,12,13)
+print(namelist[1])
+length(namelist)
+```
+
+
+```{R}
+for (i in 1:length(namelist)) {
+  biomedata<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',namelist[i],'.csv'))
+  print(namelist[i])
+  print(NROW(biomedata))
+}
+
+
+```
+Make the biome list
+
+
+```{R}
+tropicallist<-c(1,2,7)
+temperatelist<-c(4,5,8)
+montanelist<-c(10)
+boreallist<-c(6,11)
+floodlist<-c(9)
+aridlist<-c(12,13)
+
+
+```
+
+Aggregate biome datasets
+
+```{R}
+tropicalds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',1,'.csv'))
+for(i in 2:(length(tropicallist))){
+  addon<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',tropicallist[i],'.csv'))
+  tropicalds<-rbind(tropicalds,addon)
+}
+print(paste0('Tropical','___',NROW(tropicalds)))
+
+temperateds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',4,'.csv'))
+for(i in 2:(length(temperatelist))){
+  tempaddon<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',temperatelist[i],'.csv'))
+  temperateds<-rbind(temperateds,tempaddon)
+}
+print(paste0('Temperate','___',NROW(temperateds)))
+
+montaneds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',10,'.csv'))
+print(paste0('Montane','___',NROW(montaneds)))
+
+borealds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',6,'.csv'))
+borealaddon<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',11,'.csv'))
+borealds<-rbind(borealds, borealaddon)
+print(paste0('Boreal','___',NROW(borealds)))
+
+
+floodds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',9,'.csv'))
+print(paste0('Flood','___',NROW(floodds)))
+
+
+aridds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',12,'.csv'))
+aridaddon<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',13,'.csv'))
+aridds<-rbind(aridds, aridaddon)
+print(paste0('Arid','___',NROW(aridds)))
+
+```
+
+As we see here we will directly run grid search in Tropical, Montane and Boreal areas. We unfortunate cannot run models in flooded areas. The third scenario happends to temperate and arid ecosystems. These data should be bootstrapped and each 10,000 record goes to grid search functions.
+
+### Here we need to change the range of our target features from 0 to 1 to 0 to 100.
+
+Check the names
+```{R}
+names(tropicalds)
+
+
+```
+
+Change the range
+
+```{R}
+tropicalds$dbhpheno<-tropicalds$dbhpheno*100
+tropicalds$pheno<-tropicalds$pheno*100
+tropicalds$spdbhcor<-tropicalds$spdbhcor*100
+tropicalds$spdbhph<-tropicalds$spdbhph*100
+tropicalds$spph<-tropicalds$spph*100
+tropicalds$spphcor<-tropicalds$spphcor*100
+
+```
+
+
+```{R}
+names(temperateds)
+
+```
+
+```{R}
+tempfeaturelist<-c(5,8,10,11,12,13)
+
+```
+
+```{R}
+for(j in 1:6){
+  temperateds[,tempfeaturelist[j]]<-temperateds[,tempfeaturelist[j]]*100
+}
+
+
+```
+
+boreal
+```{R}
+names(borealds)
+
+```
+
+```{R}
+borealfeaturelist<-c(5,8,10,11,12,13)
+```
+
+```{R}
+
+for(j in 1:6){
+  borealds[,borealfeaturelist[j]]<-borealds[,borealfeaturelist[j]]*100
+}
+
+
+```
+
+
+Montane
+
+```{R}
+names(montaneds)
+
+
+```
+
+
+```{R}
+montanefeaturelist<-c(5,8,10,11,12,13)
+
+```
+
+```{R}
+
+for(j in 1:6){
+  montaneds[,montanefeaturelist[j]]<-montaneds[,montanefeaturelist[j]]*100
+}
+
+
+```
+
+Arid
+```{R}
+names(aridds)
+
+
+```
+
+```{R}
+aridfeaturelist<-c(5,8,10,11,12,13)
+
+```
+
+```{R}
+
+for(j in 1:6){
+  aridds[,aridfeaturelist[j]]<-aridds[,aridfeaturelist[j]]*100
+}
+
+
+```
+
+### Here we output our datasets into CSVs and shapefiles. Here we directly output tropical, montane and boreal biomes
+
+```{R}
+write.csv(tropicalds, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_grsearch_files\\wdpa_tropical_subpoints_20191119.csv')
+write.csv(montaneds, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_grsearch_files\\wdpa_montane_subpoints_20191119.csv')
+write.csv(borealds, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_grsearch_files\\wdp_boreal_subpoints_20191119.csv')
+
+
+```
+
+As the rest two datasests (temperate and arid ecosystems) are so big. We hereby use a bootstrapping approach to subsample them.
+
+Arid
+```{R}
+set.seed(0)
+for(i in 1:3){
+  aridsubds<-aridds[sample(nrow(aridds), 10000, replace = TRUE),]
+  write.csv(aridsubds,paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_grsearch_files\\wdpa_arid_subpoints_',i,'_20191119.csv'))
+}
+
+
+```
+
+temperate
+```{R}
+set.seed(0)
+for(i in 1:10){
+  temperatesubds<-temperateds[sample(nrow(temperateds), 10000, replace = TRUE),]
+  write.csv(temperatesubds,paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_grsearch_files\\wdpa_temperate_subpoints_',i,'_20191119.csv'))
+}
+
+
+```
+
+Shapefiles
+```{R}
+
+library(rgdal)
+#tropicalshp<-tropicalds[,c(1,78,79,80,85,87,89,92,93,94,95,96,97)]
+
+coordinates(tropicalds)<-~longitude+latitude
+proj4string(tropicalds)<-CRS('+init=epsg:4326')
+
+
+writeOGR(tropicalds, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_biome_shapefiles','tropical_wdpa_points_20191119','ESRI Shapefile')
+
+
+coordinates(montaneds)<-~longitude+latitude
+proj4string(montaneds)<-CRS('+init=epsg:4326')
+
+
+writeOGR(montaneds, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_biome_shapefiles','montane_wdpa_points_20191119','ESRI Shapefile')
+
+
+coordinates(borealds)<-~longitude+latitude
+proj4string(borealds)<-CRS('+init=epsg:4326')
+
+
+writeOGR(borealds, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_biome_shapefiles','boreal_wdpa_points_20191119','ESRI Shapefile')
+
+```
+
+
+```{R}
+
+for (i in 1:3) {
+  aridsub<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_grsearch_files\\wdpa_arid_subpoints_',i,'_20191119.csv'))
+  coordinates(aridsub)<-~longitude+latitude
+  proj4string(aridsub)<-CRS('+init=epsg:4326')
+
+
+writeOGR(tropicalds, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_biome_shapefiles',paste0('arid_wdpa_points_',i,'_20191119'),'ESRI Shapefile')
+}
+
+```
+
+
+
+
+```{R}
+
+for (i in 1:10) {
+  tempsub<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_grsearch_files\\wdpa_temperate_subpoints_',i,'_20191119.csv'))
+  coordinates(tempsub)<-~longitude+latitude
+  proj4string(tempsub)<-CRS('+init=epsg:4326')
+
+
+writeOGR(tempsub, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_biome_shapefiles',paste0('temperate_wdpa_points_',i,'_20191119'),'ESRI Shapefile')
+}
+
+```
+
+
+
+
+
+
+
+
+
+
