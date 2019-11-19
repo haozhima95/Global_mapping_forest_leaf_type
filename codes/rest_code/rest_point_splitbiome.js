@@ -19,5 +19,9 @@ for(var i = 1; i<15; i++){
     description:'rest_subpoints'+i,
     assetId:'users/haozhima95/forest_pheno/rest_subpoint_'+i+'_20191118'
   });
-  
+   Export.table.toDrive({
+    collection:subtable,
+    description:'rest_subpoints'+i,
+    fileFormat:'CSV'
+  });
 }
