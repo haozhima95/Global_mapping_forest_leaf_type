@@ -20,5 +20,9 @@ for(var i = 1; i<15; i++){
     description:'wdpa_subpoints'+i,
     assetId:'users/haozhima95/forest_pheno/wdpa_subpoint_'+i+'_20191118'
   });
-  
+   Export.table.toDrive({
+    collection:subtable,
+    description:'wdpa_subpoints'+i,
+    fileFormat:'CSV'
+  });
 }
