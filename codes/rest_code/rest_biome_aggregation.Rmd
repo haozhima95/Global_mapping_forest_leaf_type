@@ -1,0 +1,243 @@
+---
+title: "rest_biome_aggregation"
+author: "Haozhi Ma"
+date: "11/19/2019"
+output: html_document
+---
+
+## Rest biome aggregation
+
+#### This script is used for aggregating different biomes for further machine learning grid search by biomes.
+
+
+Read the datasets and check the sample size
+
+```{R}
+namelist<-c(1,2,4,5,6,7,8,9,10,11,12,13)
+print(namelist[1])
+length(namelist)
+```
+
+
+```{R}
+for (i in 1:length(namelist)) {
+  biomedata<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_by_biome\\wdpa_subpoints',namelist[i],'.csv'))
+  print(namelist[i])
+  print(NROW(biomedata))
+}
+```
+
+Make the biome list
+
+
+```{R}
+tropicallist<-c(1,2,7)
+temperatelist<-c(4,5,8)
+montanelist<-c(10)
+boreallist<-c(6,11)
+floodlist<-c(9)
+aridlist<-c(12,13)
+```
+
+
+
+Aggregate biome datasets
+
+```{R}
+tropicalds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',1,'.csv'))
+for(i in 2:(length(tropicallist))){
+  addon<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',tropicallist[i],'.csv'))
+  tropicalds<-rbind(tropicalds,addon)
+}
+print(paste0('Tropical','___',NROW(tropicalds)))
+temperateds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',4,'.csv'))
+for(i in 2:(length(temperatelist))){
+  tempaddon<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',temperatelist[i],'.csv'))
+  temperateds<-rbind(temperateds,tempaddon)
+}
+print(paste0('Temperate','___',NROW(temperateds)))
+montaneds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',10,'.csv'))
+print(paste0('Montane','___',NROW(montaneds)))
+borealds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',6,'.csv'))
+borealaddon<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',11,'.csv'))
+borealds<-rbind(borealds, borealaddon)
+print(paste0('Boreal','___',NROW(borealds)))
+floodds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',9,'.csv'))
+print(paste0('Flood','___',NROW(floodds)))
+aridds<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',12,'.csv'))
+aridaddon<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_sample_by_biome\\rest_subpoints',13,'.csv'))
+aridds<-rbind(aridds, aridaddon)
+print(paste0('Arid','___',NROW(aridds)))
+```
+
+### Here we need to change the range of our target features from 0 to 1 to 0 to 100.
+
+Check the names
+```{R}
+names(tropicalds)
+```
+
+Change the range
+
+```{R}
+tropicalds$dbhpheno<-tropicalds$dbhpheno*100
+tropicalds$pheno<-tropicalds$pheno*100
+tropicalds$spdbhcor<-tropicalds$spdbhcor*100
+tropicalds$spdbhph<-tropicalds$spdbhph*100
+tropicalds$spph<-tropicalds$spph*100
+tropicalds$spphcor<-tropicalds$spphcor*100
+```
+
+
+
+```{R}
+names(temperateds)
+```
+
+```{R}
+tempfeaturelist<-c(5,8,10,11,12,13)
+```
+
+```{R}
+for(j in 1:6){
+  temperateds[,tempfeaturelist[j]]<-temperateds[,tempfeaturelist[j]]*100
+}
+```
+
+
+boreal
+```{R}
+names(borealds)
+```
+
+```{R}
+borealfeaturelist<-c(5,8,10,11,12,13)
+```
+
+```{R}
+for(j in 1:6){
+  borealds[,borealfeaturelist[j]]<-borealds[,borealfeaturelist[j]]*100
+}
+```
+
+
+Arid
+```{R}
+names(aridds)
+```
+
+```{R}
+aridfeaturelist<-c(5,8,10,11,12,13)
+```
+
+```{R}
+for(j in 1:6){
+  aridds[,aridfeaturelist[j]]<-aridds[,aridfeaturelist[j]]*100
+}
+```
+
+
+### Here we output our datasets into CSVs and shapefiles. Here we directly output tropical biome.
+
+```{R}
+write.csv(tropicalds, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_grsearch_files\\rest_tropical_subpoints_20191119.csv')
+
+```
+
+
+As the rest datasests are so big. We hereby use a bootstrapping approach to subsample them.
+
+
+Arid
+```{R}
+set.seed(0)
+for(i in 1:5){
+  aridsubds<-aridds[sample(nrow(aridds), 10000, replace = TRUE),]
+  write.csv(aridsubds,paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_grsearch_files\\rest_arid_subpoints_',i,'_20191119.csv'))
+}
+```
+
+
+temperate
+
+As we have a huge dataset, we check if 10,000 samples can represent the variation of the whole dataset.
+```{R}
+tempsub<-temperateds[sample(nrow(temperateds), 10000, replace = TRUE),]
+for(i in 1:length(tempfeaturelist)){
+
+print(ks.test(tempsub[,tempfeaturelist[i]], temperateds[,tempfeaturelist[i]])$p.value)
+}
+```
+
+
+
+```{R}
+set.seed(0)
+for(i in 1:10){
+  temperatesubds<-temperateds[sample(nrow(temperateds), 10000, replace = TRUE),]
+  write.csv(temperatesubds,paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_grsearch_files\\rest_temperate_subpoints_',i,'_20191119.csv'))
+}
+```
+
+Boreal
+```{R}
+set.seed(0)
+for(i in 1:9){
+  borealsubds<-borealds[sample(nrow(borealds), 10000, replace = TRUE),]
+  write.csv(borealsubds,paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_grsearch_files\\rest_boreal_subpoints_',i,'_20191119.csv'))
+}
+```
+
+
+
+Shapefiles
+```{R}
+library(rgdal)
+#tropicalshp<-tropicalds[,c(1,78,79,80,85,87,89,92,93,94,95,96,97)]
+coordinates(tropicalds)<-~longitude+latitude
+proj4string(tropicalds)<-CRS('+init=epsg:4326')
+writeOGR(tropicalds, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_biome_shapefiles','tropical_rest_points_20191119','ESRI Shapefile')
+
+
+```
+
+Arid
+
+```{R}
+for(i in 1:5){
+  aridsub<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_grsearch_files\\rest_arid_subpoints_',i,'_20191119.csv'))
+  coordinates(aridsub)<-~longitude+latitude
+  proj4string(aridsub)<-CRS('+init=epsg:4326')
+  writeOGR(aridsub, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_biome_shapefiles',paste0('arid_rest_points_',i,'_20191119'),'ESRI Shapefile')
+}
+
+
+```
+
+temperate
+
+```{R}
+for(i in 1:10){
+  temperatesub<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_grsearch_files\\rest_temperate_subpoints_',i,'_20191119.csv'))
+  coordinates(temperatesub)<-~longitude+latitude
+  proj4string(temperatesub)<-CRS('+init=epsg:4326')
+  writeOGR(temperatesub, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_biome_shapefiles',paste0('temperate_rest_points_',i,'_20191119'),'ESRI Shapefile')
+}
+
+
+```
+
+boreal
+
+
+```{R}
+for(i in 1:9){
+  borealsub<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_grsearch_files\\rest_boreal_subpoints_',i,'_20191119.csv'))
+  coordinates(borealsub)<-~longitude+latitude
+  proj4string(borealsub)<-CRS('+init=epsg:4326')
+  writeOGR(borealsub, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\rest\\rest_biome_shapefiles',paste0('boreal_rest_points_',i,'_20191119'),'ESRI Shapefile')
+}
+
+
+```
+
