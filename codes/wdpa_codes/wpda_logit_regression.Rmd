@@ -1,0 +1,263 @@
+---
+title: "wdpa_logistic_model"
+author: "Haozhi Ma"
+date: "12/3/2019"
+output: html_document
+---
+
+```{R}
+tropicds<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_forgrsearch\\tropical_wdpa_sampled_20191121.csv')
+names(tropicds)
+```
+
+```{R}
+
+tropicds<-subset(df.for.clustering, select = c(Annual_Mean_Radiation, 
+                             Annual_Mean_Temperature, 
+                             Annual_Precipitation, 
+                             Bulk_Density_15cm, 
+                             CContent_15cm, 
+                             CatIonExcCap_15cm, 
+                             Clay_Content_15cm, 
+                             CorFragVolPerc_15cm, 
+                             Depth_to_Bedrock, 
+                             Highest_Weekly_Radiation, 
+                             Isothermality, 
+                             Lowest_Weekly_Radiation, 
+                             Max_Temperature_of_Warmest_Month, 
+                             Mean_Diurnal_Range, 
+                             Mean_Temperature_of_Coldest_Quarter, 
+                             Mean_Temperature_of_Driest_Quarter, 
+                             Mean_Temperature_of_Warmest_Quarter, 
+                             Mean_Temperature_of_Wettest_Quarter, 
+                             Min_Temperature_of_Coldest_Month, 
+                             OrgCStockTHa_5to15cm, 
+                             Precipitation_Seasonality, 
+                             Precipitation_of_Coldest_Quarter, 
+                             Precipitation_of_Driest_Month, 
+                             Precipitation_of_Driest_Quarter, 
+                             Precipitation_of_Warmest_Quarter, 
+                             Precipitation_of_Wettest_Month, 
+                             Precipitation_of_Wettest_Quarter, 
+                             PredProb_of_R_Horizon, 
+                             Radiation_Seasonality, 
+                             Radiation_of_Coldest_Quarter, 
+                             Radiation_of_Driest_Quarter, 
+                             Radiation_of_Warmest_Quarter, 
+                             Radiation_of_Wettest_Quarter, 
+                             Sand_Content_15cm, 
+                             Silt_Content_15cm, 
+                             Temperature_Annual_Range, 
+                             Temperature_Seasonality, 
+                             depth, 
+                             eastness, 
+                             elevation, 
+                             hillshade, 
+                             northness, 
+                             pHinHOX_15cm, 
+                             slope, 
+                             soil_moisture,
+                             spphcor))
+bandnames<-names(tropicds)
+print(bandnames)
+
+```
+
+
+```{R}
+summary(scale(tropicds$spphcor/100))
+library(ggplot2)
+
+ggplot(data = tropicds, aes(x = spphcor))+
+  geom_histogram()
+tropicds$discheck<-tropicds$spphcor/100
+
+ggplot(data = tropicds, aes(x = log(discheck/(1-discheck))))+
+  geom_histogram()
+```
+
+```{R}
+logitmodel<-glm(tropicds$spphcor/100~scale(tropicds$Annual_Mean_Temperature), family = binomial(link = 'logit'), data = tropicds)
+summary(logitmodel)
+```
+```{R}
+logitmodel<-glm(tropicds$spphcor/100~scale(tropicds$OrgCStockTHa_5to15cm), family = binomial(link = 'logit'), data = tropicds)
+summary(logitmodel)
+```
+
+```{R}
+namelist<-c('Annual_Mean_Temperature',
+            'OrgCStockTHa_5to15cm',
+            'Annual_Mean_Radiation',
+            'Precipitation_Seasonality',
+            'Depth_to_Bedrock',
+            'Annual_Precipitation',
+            'Temperature_Seasonality',
+            'soil_moisture'
+            )
+
+```
+
+
+
+```{R}
+for(i in namelist){
+  print(i)
+  logitmodel<-glm(tropicds$spphcor/100~scale(tropicds[,i]), family = binomial(link = 'logit'), data = tropicds)
+  print(summary(logitmodel))
+  print(anova(logitmodel, test = 'Chisq'))
+  
+  library(pscl)
+  print(pR2(logitmodel))
+  
+}
+
+```
+
+
+Boreal 
+
+```{R}
+
+borealds<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_forgrsearch\\boreal_wdpa_sampled_20191121.csv')
+names(borealds)
+```
+
+```{R}
+summary(scale(borealds$spphcor/100))
+library(ggplot2)
+
+ggplot(data = borealds, aes(x = spphcor))+
+  geom_histogram()
+
+borealds$discheck<-borealds$spphcor/100
+
+ggplot(data = borealds, aes(x = log(discheck/(1-discheck))))+
+  geom_histogram()
+```
+
+
+```{R}
+for(i in namelist){
+  print(i)
+  logitmodel<-glm(borealds$spphcor/100~scale(borealds[,i]), family = binomial(link = 'logit'), data = borealds)
+  print(summary(logitmodel))
+  
+  print(anova(logitmodel, test = 'Chisq'))
+  
+  library(pscl)
+  print(pR2(logitmodel))
+}
+
+```
+
+
+Arid
+
+
+```{R}
+
+aridds<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_forgrsearch\\arid_wdpa_sampled_20191203.csv')
+names(aridds)
+```
+
+```{R}
+summary(scale(aridds$spphcor/100))
+library(ggplot2)
+
+ggplot(data = aridds, aes(x = spphcor))+
+  geom_histogram()
+```
+
+
+
+```{R}
+for(i in namelist){
+  print(i)
+  logitmodel<-glm(spphcor/100~scale(aridds[,i]), family = binomial(link = 'logit'), data = aridds)
+  print(summary(logitmodel))
+  print(anova(logitmodel, test = 'Chisq'))
+  
+  library(pscl)
+  print(pR2(logitmodel))
+  
+}
+
+```
+Temperate
+
+
+```{R}
+
+
+tempds<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\wdpa_sample_forgrsearch\\temperate_wdpa_sampled_20191203.csv')
+names(tempds)
+```
+
+```{R}
+summary(scale(tempds$spphcor/100))
+library(ggplot2)
+
+ggplot(data = tempds, aes(x = spphcor))+
+  geom_histogram()
+
+tempds$discheck<-tempds$spphcor/100
+
+ggplot(data = tempds, aes(x = log(discheck/(1-discheck))))+
+  geom_histogram()
+```
+
+```{R}
+for(i in namelist){
+  print(i)
+  logitmodel<-glm(spphcor/100~scale(tempds[,i]), family = binomial(link = 'logit'), data = tempds)
+  print(summary(logitmodel))
+  
+  print(anova(logitmodel, test = 'Chisq'))
+  
+  library(pscl)
+  print(pR2(logitmodel))
+}
+```
+
+
+
+```{R}
+logitplot<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\wdpa\\logit_result\\logitplot.csv')
+head(logitplot)
+```
+
+
+
+
+```{R}
+logitplot$Items<-factor(logitplot$Items, levels = c('Soil Organic Carbon Stock','Soil Moisture','Depth to Bedrock','Annual Mean Radiation','Precipitation Seasonality','Annual Precipitation','Temperature Seasonality','Annual Mean Temperature'), ordered = TRUE)
+logitplot$Items
+```
+
+
+
+```{R}
+library(ggplot2)
+
+ggplot(logitplot, aes(x = Items, y = Coefficient, fill = Biome))+
+  geom_bar(stat = 'identity',position = position_dodge(),color = 'black')+
+  #geom_errorbar(aes(ymin = Estimate - 2*rsrplot$Std..Error, ymax = Estimate + 2*rsrplot$Std..Error), position = position_dodge(.9), width = 0)+
+  coord_flip()+
+  theme_classic()+
+  geom_hline(yintercept = 0)+
+  theme(axis.text = element_text(angle = 0, hjust = 1))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
