@@ -1,0 +1,263 @@
+---
+title: "alldata_grsearch"
+author: "Haozhi Ma"
+date: "12/4/2019"
+output: html_document
+---
+
+### This is script is used for grid search approach for different samples from biomes in wdpa and non-protected areas. 
+
+We firstly load the packages
+
+```{R}
+
+library(data.table)
+library(h2o)
+library(raster)
+library(tictoc)
+library(foreach)
+library(doParallel)
+library(tidyverse)
+
+```
+
+Load the table
+
+
+```{R}
+
+df<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\all_data\\data_for_grsearch\\arid_alldata_1_sampled_20191204.csv')
+names(df)
+
+
+```
+
+
+Here we subset the bands that we will use for grid search. As such we only need predictive variables. 
+
+```{R}
+bands<-subset(df, select = c(Annual_Mean_Radiation, 
+                             Annual_Mean_Temperature, 
+                             Annual_Precipitation, 
+                             Bulk_Density_15cm, 
+                             CContent_15cm, 
+                             CatIonExcCap_15cm, 
+                             Clay_Content_15cm, 
+                             CorFragVolPerc_15cm, 
+                             Depth_to_Bedrock, 
+                             Highest_Weekly_Radiation, 
+                             Isothermality, 
+                             Lowest_Weekly_Radiation, 
+                             Max_Temperature_of_Warmest_Month, 
+                             Mean_Diurnal_Range, 
+                             Mean_Temperature_of_Coldest_Quarter, 
+                             Mean_Temperature_of_Driest_Quarter, 
+                             Mean_Temperature_of_Warmest_Quarter, 
+                             Mean_Temperature_of_Wettest_Quarter, 
+                             Min_Temperature_of_Coldest_Month, 
+                             OrgCStockTHa_5to15cm, 
+                             Precipitation_Seasonality, 
+                             Precipitation_of_Coldest_Quarter, 
+                             Precipitation_of_Driest_Month, 
+                             Precipitation_of_Driest_Quarter, 
+                             Precipitation_of_Warmest_Quarter, 
+                             Precipitation_of_Wettest_Month, 
+                             Precipitation_of_Wettest_Quarter, 
+                             PredProb_of_R_Horizon, 
+                             Radiation_Seasonality, 
+                             Radiation_of_Coldest_Quarter, 
+                             Radiation_of_Driest_Quarter, 
+                             Radiation_of_Warmest_Quarter, 
+                             Radiation_of_Wettest_Quarter, 
+                             Sand_Content_15cm, 
+                             Silt_Content_15cm, 
+                             Temperature_Annual_Range, 
+                             Temperature_Seasonality, 
+                             depth, 
+                             eastness, 
+                             elevation, 
+                             hillshade, 
+                             northness, 
+                             pHinHOX_15cm, 
+                             slope, 
+                             soil_moisture,
+                             Human_Development_Percentage,
+                             Human_Footprint_2009,
+                             Population_Density))
+bandnames<-names(bands)
+print(bandnames)
+
+```
+
+
+```{R}
+rawmatrix<-df
+
+```
+
+Set the name of the dependent variable
+
+```{R}
+vartomodel<-'spphcor'
+
+```
+
+Select the bands from the regression matrix
+
+```{R}
+regressionmatrix<-rawmatrix %>%
+  select(bandnames, vartomodel)
+
+```
+
+```{R}
+library(ggplot2)
+
+ggplot(data = df, aes(x = df$spphcor))+
+  geom_histogram()
+
+```
+
+
+Initiate the working environment.
+
+```{R}
+localH2O<-h2o.init(nthreads =4, max_mem_size = '10g', ignore_config = TRUE)
+
+```
+
+Import the regression matrix
+
+```{R}
+regmatrixh2o<-as.h2o(regressionmatrix, destination_frame = 'regMatrixH2O')
+
+```
+
+
+
+Set grsearch hyperparameter
+```{R}
+rf.params<-list(ntrees = 100,
+                mtries = c(2:10,20,30),
+                min_rows = c(2:5))
+
+```
+
+Set grsearch criteria
+
+```{R}
+search.criteria<-list(strategy = 'RandomDiscrete', max_models = 44, seed = 0)
+```
+
+Perform rf grsearch across parameters
+
+```{R}
+rf.grid<-h2o.grid('randomForest',
+                  y = vartomodel,
+                  grid_id = 'rf.grid',
+                  training_frame = regmatrixh2o,
+                  seed = 0,
+                  hyper_params = rf.params,
+                  sample_rate = 0.632,
+                  nfolds = 10,
+                  search_criteria = search.criteria)
+```
+
+
+Retireve grid searched model preformance sorted by R2
+
+```{R}
+rf.grid.perf<-h2o.getGrid(grid_id = 'rf.grid',
+                          sort_by = 'R2',
+                          decreasing = TRUE)
+
+```
+
+```{R}
+print(rf.grid.perf@summary_table)
+
+
+```
+
+Save the hyperparameter table to files
+
+
+```{R}
+write.csv(rf.grid.perf@summary_table, 'C:\\Users\\haozh\\Desktop\\LL\\subsample_grsearch\\all_data\\bestmodels\\alldata_arid_bestmodels.csv')
+
+```
+
+Grab the best models,
+
+```{R}
+bestrf<-h2o.getModel(rf.grid.perf@model_ids[[2]])
+
+```
+R2 of best performing RF
+
+```{R}
+h2o.r2(bestrf, xval = TRUE)
+
+```
+Variable importance metrics
+
+```{R}
+h2o.varimp_plot(bestrf)
+
+```
+
+
+### Doing plots
+
+
+```{R}
+fullprediction<-as.data.frame(h2o.predict(bestrf,regmatrixh2o))
+
+trainandpredicted<-as.data.frame(fullprediction)
+
+trainandpredicted$train<-regressionmatrix[[vartomodel]]
+
+```
+
+Define palette
+
+```{R}
+paletteForUse <- c('#d10000', '#ff6622', '#ffda21', '#33dd00', '#1133cc', '#220066', '#330044')
+colors <-  colorRampPalette(paletteForUse)(256)
+
+trainandpredicted$dens <- col2rgb(densCols(trainandpredicted$train, trainandpredicted$predict))[1,] + 1L
+trainandpredicted$colors = colors[trainandpredicted$dens]
+
+summary(lm(predict ~ train, data = trainandpredicted))
+
+```
+
+```{R}
+ggplot(trainandpredicted, 
+                      aes(x = predict, 
+                          y = train)) +
+  geom_point(color = trainandpredicted$colors) +
+  labs(x = "Predicted",
+       y = "Observed") +
+  coord_cartesian(xlim = c(0,100), ylim = c(0,100)) +
+  stat_smooth(se = T,
+              colour = "black",
+              size = 0.5,
+              method = "lm") +
+  geom_abline(slope = 1,
+              intercept = 0,
+              na.rm = FALSE, 
+              show.legend = NA, 
+              linetype = "dashed") +
+  theme_bw()
+
+```
+
+
+
+
+
+
+
+
+
