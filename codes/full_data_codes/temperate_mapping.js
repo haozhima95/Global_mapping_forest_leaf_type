@@ -13,8 +13,8 @@ var comp = ee.Image("users/haozhima95/Devin_environment_composite_20190218"),
     table = ee.FeatureCollection("users/haozhima95/wwf_terr_ecos");
     
 
-for(var j = 1; j<10; j++){
-var tabletorf = ee.FeatureCollection('users/haozhima95/forest_pheno/boreal_alldata_'+j+'_sampled_20191204');
+for(var j = 1; j<11; j++){
+var tabletorf = ee.FeatureCollection('users/haozhima95/forest_pheno/temperate_alldata_'+j+'_sampled_20191204');
 
 print(tropicalleaf.limit(1));
 
@@ -23,15 +23,15 @@ var all_tree = ee.ImageCollection([image, image2, image3, image4]);
 var treemask = all_tree.gte(10);
 var treerange = all_tree.mask(treemask.gt(0));
 
-var region1 = table.filterMetadata('BIOME','equals',6);
-var region2 = table.filterMetadata('BIOME','equals',11);
-// var region3 = table.filterMetadata('BIOME','equals',8);
+var region1 = table.filterMetadata('BIOME','equals',4);
+var region2 = table.filterMetadata('BIOME','equals',5);
+var region3 = table.filterMetadata('BIOME','equals',8);
 
 var tree1 = treerange.clip(region1);
 var tree2 = treerange.clip(region2);
-// var tree3 = treerange.clip(region3);
+var tree3 = treerange.clip(region3);
 
-var allrange = ee.ImageCollection([tree1,tree2]);
+var allrange = ee.ImageCollection([tree1,tree2,tree3]);
     allrange = allrange.mosaic();
 
 Map.addLayer(allrange);
@@ -40,10 +40,10 @@ Map.addLayer(allrange);
     comp = comp.addBands(water_depth);
 
 
-var mtry = [8,9,6,10,7,10,20,30,5,9];
+var mtry = [9,8,10,8,6,6,7,8,7];
 print(mtry);
 
-var leafpop = [2,2,2,2,2,3,2,2,2,3];
+var leafpop = [4,5,5,4,5,4,3,3,5,5];
 
 
 for(var i = 0; i<10; i++){
@@ -134,8 +134,8 @@ Map.addLayer(finalMap,vis);
 var st = i+1+(j-1)*10;
 Export.image.toAsset({
   image:finalMap,
-  description:'boreal_alldata_rf_sppcor_'+st,
-  assetId:'users/haozhima95/forest_pheno/boreal_alldata_rf_sppcor_'+st,
+  description:'temperate_alldata_rf_sppcor_'+st,
+  assetId:'users/haozhima95/forest_pheno/temperate_alldata_rf_sppcor_'+st,
   crs:'EPSG:4326',
   region:unboundedGeo,
   crsTransform:[0.008333333333333333,0,-180,0,-0.008333333333333333,90],
