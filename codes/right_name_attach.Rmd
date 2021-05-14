@@ -1,0 +1,428 @@
+---
+title: "play_with_GFBI"
+author: "Haozhi Ma"
+date: "9/8/2020"
+output: html_document
+---
+
+This script is used for playing species reference list with GFBI dataset.
+
+Load the Best match.
+
+
+```{R}
+library(feather)
+
+```
+
+```{R}
+bestmatchtpl<-read_feather('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\BEST_MATCH_all_species_TPL.feather')
+
+#feather_metadata('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\BEST_MATCH_all_species_TPL.feather')
+head(bestmatchtpl,n = 15L)
+
+summary(bestmatchtpl$tax_level)
+```
+
+Load the GFBI rarefied dataset.
+
+```{R}
+
+gfrare <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\GFBI_rarefied.csv')
+tail(gfrare,n = 10L)
+nrow(gfrare)
+```
+
+
+```{R}
+bestmatch[bestmatch$raw_name == 'Adenocalymna grandifolium',]
+
+```
+
+Try left join to get the information.
+
+
+```{R}
+library(plyr)
+correctgf<-join(gfrare,bestmatchtpl, by = 'raw_name')
+#head(correctgf)
+
+correctgf<-subset(correctgf, select = -c(tax_species,
+                                         tax_level,
+                                         raw_name))
+head(correctgf,n = 10L)
+
+
+```
+
+
+Clean the dictionary
+
+
+```{R}
+# Load the dictionary first
+
+phenodic<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\dictionary_leaf_phenology_spp.csv')
+names(phenodic)<-c('raw_name','Unnamed','OrigValueStr')
+head(phenodic,n = 10L)
+
+```
+
+Leftjoin
+
+```{R}
+correctdic<-join(phenodic,bestmatchtpl, by = 'raw_name')
+correctdic<-subset(correctdic, select = -c(raw_name,
+                                           Unnamed))
+```
+
+
+```{R}
+head(correctdic, n = 10L)
+nrow(correctdic[correctdic$accepted_bin==NaN,])
+nrow(correctdic)
+```
+
+
+Output the dictionary
+
+
+```{R}
+write.csv(correctdic, 'C:\\Users\\haozh\\Desktop\\LL\\dictionary_leaf_phenology_spp_correctname_20200910.csv')
+
+```
+
+
+
+Add the genus dictionary
+
+
+```{R}
+
+sppdic<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\dictionary_leaf_phenology_spp_correctname_unique_20200910.csv')
+sppdic<-subset(sppdic, select = -c(tax_genus))
+head(sppdic)
+genusdic<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\genus_dictionary_20200910.csv')
+names(genusdic)<-c('tax_genus','Unnamed..0','OrigValueStr_genus','tax_level')
+
+head(genusdic,n = 10L)
+
+nrow(genusdic[genusdic$OrigValueStr_genus == 1,])/nrow(genusdic)
+
+nrow(genusdic[genusdic$OrigValueStr_genus == 0,])/nrow(genusdic)
+
+
+```
+
+
+
+
+
+```{R}
+nrow(correctgf)
+head(correctgf)
+```
+
+
+```{R}
+subcorrectgf1<-correctgf[1:500000,]
+head(subcorrectgf1)
+
+subcorrectgf2<-correctgf[500001:1000000,]
+
+subcorrectgf3<-correctgf[1000001:1500000,]
+
+subcorrectgf4<-correctgf[1500001:2000000,]
+
+subcorrectgf5<-correctgf[2000001:2500000,]
+
+subcorrectgf6<-correctgf[2500001:nrow(correctgf),]
+
+```
+
+
+```{R}
+duplicated(correctdic$accepted_bin)
+
+```
+
+
+
+
+Leftjoin OrigValueStr
+
+```{R}
+
+correctplot1 <- join(subcorrectgf1,sppdic, by = 'accepted_bin')
+nrow(correctplot1)
+head(correctplot1)
+
+```
+
+```{R}
+
+correctplot1 <- join(correctplot1, genusdic, by = 'tax_genus')
+nrow(correctplot1)
+
+
+head(correctplot1)
+```
+
+```{R}
+is.na(correctplot1[1,'OrigValueStr'])
+correctplot1[1,'OrigValueStr']
+```
+
+
+```{R}
+for(i in 1:nrow(correctplot1)){
+  if(is.na(correctplot1[i,'OrigValueStr'])){
+    correctplot1[i,'OrigValueStr'] <- correctplot1[i,'OrigValueStr_genus']
+  }
+}
+head(correctplot1)
+
+```
+
+
+
+
+```{R}
+
+head(correctplot1,20L)
+
+```
+
+
+
+
+
+
+
+
+
+```{R}
+
+correctplot2 <- join(subcorrectgf2,sppdic, by = 'accepted_bin')
+nrow(correctplot2)
+head(correctplot2)
+
+```
+
+```{R}
+
+correctplot2 <- join(correctplot2, genusdic, by = 'tax_genus')
+nrow(correctplot2)
+head(correctplot2)
+```
+
+```{R}
+for(i in 1:nrow(correctplot2)){
+  if(is.na(correctplot2[i,'OrigValueStr'])){
+    correctplot2[i,'OrigValueStr'] <- correctplot2[i,'OrigValueStr_genus']
+  }
+}
+head(correctplot2)
+
+```
+
+
+
+```{R}
+
+correctplot3 <- join(subcorrectgf3,sppdic, by = 'accepted_bin')
+nrow(correctplot3)
+head(correctplot3)
+```
+
+```{R}
+
+
+correctplot3 <- join(correctplot3, genusdic, by = 'tax_genus')
+nrow(correctplot3)
+head(correctplot3)
+```
+
+
+```{R}
+for(i in 1:nrow(correctplot3)){
+  if(is.na(correctplot3[i,'OrigValueStr'])){
+    correctplot3[i,'OrigValueStr'] <- correctplot3[i,'OrigValueStr_genus']
+  }
+}
+head(correctplot3)
+
+```
+
+
+```{R}
+
+correctplot4 <- join(subcorrectgf4,sppdic, by = 'accepted_bin')
+nrow(correctplot4)
+head(correctplot4)
+```
+
+
+
+```{R}
+
+correctplot4 <- join(correctplot4, genusdic, by = 'tax_genus')
+nrow(correctplot4)
+head(correctplot4)
+```
+
+
+```{R}
+for(i in 1:nrow(correctplot4)){
+  if(is.na(correctplot4[i,'OrigValueStr'])){
+    correctplot4[i,'OrigValueStr'] <- correctplot4[i,'OrigValueStr_genus']
+  }
+}
+head(correctplot4)
+
+```
+
+
+
+```{R}
+
+correctplot5 <- join(subcorrectgf5,sppdic, by = 'accepted_bin')
+nrow(correctplot5)
+head(correctplot5)
+
+```
+
+```{R}
+correctplot5 <- join(correctplot5, genusdic, by = 'tax_genus')
+nrow(correctplot5)
+head(correctplot5)
+```
+
+```{R}
+for(i in 1:nrow(correctplot5)){
+  if(is.na(correctplot5[i,'OrigValueStr'])){
+    correctplot5[i,'OrigValueStr'] <- correctplot5[i,'OrigValueStr_genus']
+  }
+}
+head(correctplot5)
+
+```
+
+
+```{R}
+
+correctplot6 <- join(subcorrectgf6,sppdic, by = 'accepted_bin')
+nrow(correctplot6)
+head(correctplot6)
+```
+
+
+```{R}
+
+correctplot6 <- join(correctplot6, genusdic, by = 'tax_genus')
+nrow(correctplot6)
+head(correctplot6)
+```
+
+
+```{R}
+for(i in 1:nrow(correctplot6)){
+  if(is.na(correctplot6[i,'OrigValueStr'])){
+    correctplot6[i,'OrigValueStr'] <- correctplot6[i,'OrigValueStr_genus']
+  }
+}
+head(correctplot6)
+
+```
+
+Look at the data structure and try to delete some columns
+
+
+```{R}
+
+
+plotwithhabit1<-subset(correctplot1, select = -c(tax_level,
+                                               tax_level,
+                                               Unnamed..0))
+
+head(plotwithhabit1)
+```
+
+```{R}
+
+
+plotwithhabit2<-subset(correctplot2, select = -c(tax_level,
+                                               tax_level,
+                                               Unnamed..0))
+
+head(plotwithhabit2)
+```
+
+
+```{R}
+
+
+plotwithhabit3<-subset(correctplot3, select = -c(tax_level,
+                                               tax_level,
+                                               Unnamed..0))
+
+head(plotwithhabit3)
+```
+
+
+```{R}
+
+
+plotwithhabit4<-subset(correctplot4, select = -c(tax_level,
+                                               tax_level,
+                                               Unnamed..0))
+
+head(plotwithhabit4)
+```
+
+
+```{R}
+
+
+plotwithhabit5<-subset(correctplot5, select = -c(tax_level,
+                                               tax_level,
+                                               Unnamed..0))
+
+head(plotwithhabit5)
+```
+
+
+```{R}
+
+
+plotwithhabit6<-subset(correctplot6, select = -c(tax_level,
+                                               tax_level,
+                                               Unnamed..0))
+
+head(plotwithhabit6)
+```
+
+
+Aggregate them all
+
+
+```{R}
+
+allplotwithhabit<-rbind(plotwithhabit1,rbind(plotwithhabit2,rbind(plotwithhabit3,rbind(plotwithhabit4,rbind(plotwithhabit5,plotwithhabit6)))))
+
+
+nrow(allplotwithhabit)
+
+
+```
+
+
+Outputting dataset
+
+```{R}
+write.csv(allplotwithhabit, 'C:\\Users\\haozh\\Desktop\\LL\\raregfdata_with_habit_20200911.csv')
+
+```
+
+
+

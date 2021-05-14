@@ -1,0 +1,70 @@
+---
+title: "gfunique_wash_info_coverage"
+author: "Haozhi Ma"
+date: "9/16/2020"
+output: html_document
+---
+This script is used for cleaning plots that lack info coverage at certain level. The final dataframe will only contain records that sufficiently reflect the reality of the plot.
+
+
+Load the dataset
+
+```{R}
+gfrecent<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\gfrecent_20200916.csv')
+
+
+
+```
+
+
+```{R}
+head(gfrecent)
+
+```
+
+
+Get the histogram
+
+```{R}
+library(ggplot2)
+
+ggplot(gfrecent, aes(x = info_coverage))+
+  geom_histogram()
+
+nrow(gfrecent[gfrecent$info_coverage<0.5,])/nrow(gfrecent)
+
+nrow(gfrecent[gfrecent$info_coverage<0.75,])/nrow(gfrecent)
+
+nrow(gfrecent[gfrecent$info_coverage<0.9,])/nrow(gfrecent)
+
+
+
+```
+
+
+Show the scatter plot
+
+```{R}
+world<-map_data('world')
+
+ggplot()+
+  geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = 'grey40', color = 'grey40', size = 0.1)+
+  geom_point(data = gfrecent[gfrecent$info_coverage<0.5,], aes(x = longitude, y = latitude))
+
+```
+
+Filter the data by 50% coverage.
+
+```{R}
+gfrecent_50cover<-gfrecent[gfrecent$info_coverage>=0.5,]
+
+
+```
+
+Output the data
+```{R}
+write.csv(gfrecent_50cover, 'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\gfrecent_50cover_20200916.csv')
+
+```
+
+
