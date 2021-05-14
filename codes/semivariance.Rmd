@@ -1,0 +1,292 @@
+---
+title: "leaf_habit_semivariance"
+author: "Haozhi Ma"
+date: "5/12/2021"
+output: html_document
+---
+
+Firstly load the data
+```{R}
+library(sp)
+
+library(spatstat)
+
+library(gstat)
+
+library(geoR)
+
+library(ncf)
+
+library(spdep)
+
+
+
+```
+
+
+```{R}
+i<-10
+rawmatrix<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\gfdata_grsearch\\sub_gfrawmatrix_seed',i,'.csv'))
+#rawmatrix$leaf_habit<-rawmatrix$leaf_habit/100
+tail(rawmatrix)
+bestmodel <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\gfdata_grsearch\\cvprediction_10.csv');
+names(bestmodel)
+bestmodel$resi <- bestmodel$orgleafhabit - bestmodel$orgpredmean
+head(bestmodel)
+
+```
+
+
+File conversion
+
+```{R}
+coordinates(rawmatrix) <- ~longitude + latitude
+proj4string(rawmatrix) <- CRS("+init=epsg:4326")
+
+coordinates(bestmodel) <- ~longitude + latitude
+proj4string(bestmodel) <- CRS('+init=epsg:4326')
+
+```
+
+
+```{R}
+vcloud<-variogram(leaf_habit~1, data = rawmatrix, cloud = F, cutoff = 1000, width = 10)
+
+```
+
+```{R}
+plot(vcloud)
+
+```
+
+```{R}
+vcloud<-variogram(resi~1, data = bestmodel, cloud = F, cutoff = 1000, width = 10)
+
+```
+
+```{R}
+plot(vcloud)
+
+```
+
+```{R}
+library(data.table)
+library(h2o)
+library(raster)
+library(tictoc)
+library(foreach)
+library(doParallel)
+library(tidyverse)
+```
+
+
+```{R}
+gfforgrsearch<-read.csv('C:\\Users\\haozh\\Desktop\\LL\\gfdata_grsearch\\gfunique_sampled_longlat_attached_20200916.csv')
+
+names(gfforgrsearch)
+
+```
+
+
+Choose the bands
+
+```{R}
+bands<-subset(gfforgrsearch, select = -c(X, system.index, Biome, WDPA, info_coverage, index, leaf_habit, no_plots, year, .geo, longitude, latitude))
+
+bandnames<-names(bands)
+
+print(bandnames)
+```
+
+```{R}
+ggplot(data = gfforgrsearch, aes(x = leaf_habit))+
+  geom_histogram()
+
+```
+
+
+
+
+
+
+Firstly load the data
+
+
+
+```{R}
+i<-10
+rawmatrix<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\gfdata_grsearch\\sub_gfrawmatrix_seed',i,'.csv'))
+rawmatrix$leaf_habit<-rawmatrix$leaf_habit/100
+tail(rawmatrix)
+
+
+```
+
+
+
+
+
+
+```{R}
+ggplot(data = rawmatrix, aes(x = leaf_habit))+
+  geom_histogram()
+
+```
+
+
+transform the dataset by eliminating 0 and 1
+
+```{R}
+# Define the function
+crib_fun <- function(x){(x * (length(x) - 1) + 0.5) / length(x)}
+```
+
+
+```{R}
+rawmatrix$leaf_habit<-crib_fun(rawmatrix$leaf_habit)
+
+```
+
+
+```{R}
+ggplot(data = rawmatrix, aes(x = leaf_habit))+
+  geom_histogram()
+max(rawmatrix$leaf_habit)
+min(rawmatrix$leaf_habit)
+```
+
+transform into logit
+
+```{R}
+library(boot)
+rawmatrix$leaf_habit<-logit(rawmatrix$leaf_habit)
+
+
+```
+
+```{R}
+ggplot(data = rawmatrix, aes(x = leaf_habit))+
+  geom_histogram()
+
+```
+
+
+
+
+Set the names of the dependent variable
+
+
+```{R}
+vartomodel<-'leaf_habit'
+
+```
+
+Select the bands from the regression matrix
+
+```{R}
+regressionmatrix<-rawmatrix %>%
+  select(bandnames, vartomodel)
+#regressionmatrix<-subset(regressionmatrix, select= -c(X.1))
+names(regressionmatrix)
+
+```
+
+```{R}
+fit1<-glm(leaf_habit~., data = regressionmatrix )
+summary(fit1)
+
+pred<-predict(fit1)
+pred
+```
+
+
+```{R}
+regressionmatrix$pred<-pred
+
+regressionmatrix$leaf_habit<-inv.logit(regressionmatrix$leaf_habit)*100
+
+regressionmatrix$pred<- inv.logit(regressionmatrix$pred)*100
+```
+
+
+```{R}
+regressionmatrix$glmresi<-regressionmatrix$leaf_habit - regressionmatrix$pred
+
+```
+
+
+```{R}
+regressionmatrix<-cbind(regressionmatrix, rawmatrix$longitude)
+regressionmatrix<-cbind(regressionmatrix, rawmatrix$latitude)
+
+tail(regressionmatrix)
+```
+
+```{R}
+coordinates(regressionmatrix) <- ~rawmatrix$longitude + rawmatrix$latitude
+proj4string(regressionmatrix) <- CRS("+init=epsg:4326")
+
+```
+
+```{R}
+vcloud<-variogram(glmresi~1, data = regressionmatrix, cloud = F, cutoff = 1000, width = 10)
+
+```
+
+```{R}
+plot(vcloud)
+
+```
+
+200km loo spatial cv
+
+```{R}
+loo200km = read.csv('C:\\Users\\haozh\\Desktop\\LL\\spatial_cv\\leaf_habit_loo_cv_200km.csv')
+#head(loo200km, 20)
+loo200km$leaf_habit <- inv.logit(loo200km$leaf_habit)*100
+loo200km$predicted <- inv.logit(loo200km$predicted)*100
+head(loo200km, 10)
+```
+```{R}
+coef_det <- function(xtrue, xpred){
+    return(1-sum((xtrue-xpred)^2)/sum((xtrue-mean(xtrue))^2))
+}
+ 
+```
+
+```{R}
+#coef_det(cvprediction$`regressionmatrix$leaf_habit`,cvprediction$predictmean)
+
+```
+
+
+```{R}
+for(i in 0:9){
+  subds<-loo200km[loo200km$rep == i,]
+  print(nrow(subds))
+  print(coef_det(loo200km$leaf_habit, loo200km$predicted))
+}
+
+
+```
+
+```{R}
+subdf <- loo200km[loo200km$rep == 0, ]
+subdf$resi<-subdf$leaf_habit - subdf$predicted
+coordinates(subdf) <- ~longitude + latitude
+proj4string(regressionmatrix) <- CRS("+init=epsg:4326")
+
+```
+
+
+```{R}
+vcloud<-variogram(resi~1, data = subdf, cloud = F, cutoff = 1000, width = 10)
+
+```
+
+```{R}
+plot(vcloud)
+
+```
+
+
