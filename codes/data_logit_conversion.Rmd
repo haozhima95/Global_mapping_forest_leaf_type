@@ -1,0 +1,60 @@
+---
+title: "logit_transform"
+author: "Haozhi Ma"
+date: "9/23/2020"
+output: html_document
+---
+
+This script is used to transform the leaf habit data to a logit one. This version of data would help better perform in random forest modellings.
+
+
+
+```{R}
+library(boot)
+
+```
+Neto's function
+
+
+```{R}
+# Define the function
+crib_fun <- function(x){(x * (length(x) - 1) + 0.5) / length(x)}
+```
+
+
+
+initiate a function
+```{R}
+logitconvert<-function(x){
+  # Convert [0,100] to [0,1]
+  x<-x/100
+  
+  # Convert [0,1] to (0,1)
+  x<-crib_fun(x)
+  
+  # Convert (0,1) to (-10,10)
+  x<-logit(x)
+  #return(ds)
+  
+}
+
+```
+
+
+
+
+Initiate the loop
+
+```{R}
+for(i in seq(10,1000,10)){
+  #i = 10
+ print(i)
+  
+  dsforconvert<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\gfdata_grsearch\\sub_gfrawmatrix_seed',i,'.csv'))
+  
+  dsforconvert$leaf_habit<-logitconvert(dsforconvert$leaf_habit)
+  #head(dsforconvert)
+  write.csv(dsforconvert, paste0('C:\\Users\\haozh\\Desktop\\LL\\gfdata_grsearch\\sub_logitmatrix_seed',i,'.csv'),row.names = FALSE)
+}
+
+```
