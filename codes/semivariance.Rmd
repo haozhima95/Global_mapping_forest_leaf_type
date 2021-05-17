@@ -1,0 +1,238 @@
+---
+title: "leaf_habit_semivariance"
+author: "Haozhi Ma"
+date: "5/12/2021"
+output: html_document
+---
+
+Firstly load the data
+```{R}
+library(sp)
+
+library(spatstat)
+
+library(gstat)
+
+library(geoR)
+
+library(ncf)
+
+library(spdep)
+
+library(boot)
+
+```
+
+
+```{R}
+i<-10
+rawmatrix<-read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\gfdata_grsearch\\sub_gfrawmatrix_seed',i,'.csv'))
+#rawmatrix$leaf_habit<-rawmatrix$leaf_habit/100
+tail(rawmatrix)
+bestmodel <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\gfdata_grsearch\\cvprediction_10.csv');
+names(bestmodel)
+bestmodel$resi <- bestmodel$orgleafhabit - bestmodel$orgpredmean
+head(bestmodel)
+
+```
+
+
+File conversion
+
+```{R}
+coordinates(rawmatrix) <- ~longitude + latitude
+proj4string(rawmatrix) <- CRS("+init=epsg:4326")
+
+coordinates(bestmodel) <- ~longitude + latitude
+proj4string(bestmodel) <- CRS('+init=epsg:4326')
+
+```
+
+
+```{R}
+vcloud.raw<-variogram(leaf_habit~1, data = rawmatrix, cloud = F, cutoff = 1000, width = 10)
+vcloud.raw$class <- 'raw_data'
+```
+
+```{R}
+plot(vcloud.raw)
+
+```
+
+```{R}
+vcloud.rfresi<-variogram(resi~1, data = bestmodel, cloud = F, cutoff = 1000, width = 10)
+vcloud.rfresi$class <- 'rf_resi'
+```
+
+```{R}
+plot(vcloud.rfresi)
+
+```
+150km loo spatial cv
+
+```{R}
+loo200km = read.csv('C:\\Users\\haozh\\Desktop\\LL\\spatial_cv\\loowithlonlat_classic_150km_20210515.csv')
+#head(loo200km, 20)
+loo200km$leaf_habit <- inv.logit(loo200km$leaf_habit)*100
+loo200km$predicted <- inv.logit(loo200km$predicted)*100
+head(loo200km, 10)
+```
+```{R}
+coef_det <- function(xtrue, xpred){
+    return(1-sum((xtrue-xpred)^2)/sum((xtrue-mean(xtrue))^2))
+}
+ 
+```
+
+```{R}
+#coef_det(cvprediction$`regressionmatrix$leaf_habit`,cvprediction$predictmean)
+
+```
+
+
+```{R}
+coef_det(loo200km$leaf_habit, loo200km$predicted)
+
+
+```
+
+
+```{R}
+subdf <- loo200km
+subdf$resi<-subdf$leaf_habit - subdf$predicted
+coordinates(subdf) <- ~longitude + latitude
+proj4string(subdf) <- CRS("+init=epsg:4326")
+
+```
+
+
+```{R}
+vcloud.150km<-variogram(resi~1, data = subdf, cloud = F, cutoff = 1000, width = 10)
+vcloud.150km$class <- 'loo150km'
+```
+
+```{R}
+plot(vcloud.150km)
+
+```
+
+
+
+
+200km loo spatial cv
+
+```{R}
+loo200km = read.csv('C:\\Users\\haozh\\Desktop\\LL\\spatial_cv\\loowithlonlat_classic_200km_20210515.csv')
+#head(loo200km, 20)
+loo200km$leaf_habit <- inv.logit(loo200km$leaf_habit)*100
+loo200km$predicted <- inv.logit(loo200km$predicted)*100
+head(loo200km, 10)
+```
+```{R}
+coef_det <- function(xtrue, xpred){
+    return(1-sum((xtrue-xpred)^2)/sum((xtrue-mean(xtrue))^2))
+}
+ 
+```
+
+```{R}
+#coef_det(cvprediction$`regressionmatrix$leaf_habit`,cvprediction$predictmean)
+
+```
+
+
+```{R}
+coef_det(loo200km$leaf_habit, loo200km$predicted)
+
+
+```
+
+```{R}
+subdf <- loo200km
+subdf$resi<-subdf$leaf_habit - subdf$predicted
+coordinates(subdf) <- ~longitude + latitude
+proj4string(subdf) <- CRS("+init=epsg:4326")
+
+```
+
+
+```{R}
+vcloud.200km<-variogram(resi~1, data = subdf, cloud = F, cutoff = 1000, width = 10)
+vcloud.200km$class <- 'loo200km'
+```
+
+```{R}
+plot(vcloud.200km)
+
+```
+
+250km loo spatial cv
+
+```{R}
+loo200km = read.csv('C:\\Users\\haozh\\Desktop\\LL\\spatial_cv\\loowithlonlat_classic_250km_20210515.csv')
+#head(loo200km, 20)
+loo200km$leaf_habit <- inv.logit(loo200km$leaf_habit)*100
+loo200km$predicted <- inv.logit(loo200km$predicted)*100
+head(loo200km, 10)
+```
+```{R}
+coef_det <- function(xtrue, xpred){
+    return(1-sum((xtrue-xpred)^2)/sum((xtrue-mean(xtrue))^2))
+}
+ 
+```
+
+```{R}
+#coef_det(cvprediction$`regressionmatrix$leaf_habit`,cvprediction$predictmean)
+
+```
+
+
+```{R}
+coef_det(loo200km$leaf_habit, loo200km$predicted)
+
+
+```
+
+```{R}
+subdf <- loo200km
+subdf$resi<-subdf$leaf_habit - subdf$predicted
+coordinates(subdf) <- ~longitude + latitude
+proj4string(subdf) <- CRS("+init=epsg:4326")
+
+```
+
+
+```{R}
+vcloud.250km<-variogram(resi~1, data = subdf, cloud = F, cutoff = 1000, width = 10)
+vcloud.250km$class <- 'loo250km'
+```
+
+```{R}
+plot(vcloud.250km)
+
+```
+
+
+```{R}
+
+semiall<-rbind(vcloud.rfresi,rbind(vcloud.150km,rbind(vcloud.200km,vcloud.250km)))
+
+head(semiall)
+```
+
+```{R}
+library(ggplot2)
+ggplot(data = semiall, aes(x = dist, y = gamma, color = class))+
+  geom_smooth(method = 'loess', se = FALSE, size = 2, span = 0.4)+
+  theme_classic()+
+  #scale_y_continuous(limits = c(0,400))+
+  labs(x = 'Distance (km)', y = 'Semivariance')+
+  scale_color_viridis_d()+
+  theme(axis.title = element_text(size = 20), axis.text.x = element_text(size = 20,color = 'black'), axis.text.y = element_text(size = 20, colour = 'black'),
+        legend.title = element_blank(), legend.text = element_text(size = 20))
+
+```
+
+
+
