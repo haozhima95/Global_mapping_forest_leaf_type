@@ -36,7 +36,7 @@ nrow(gfrare)
 
 
 
-Try left join to get the information.
+Try left join getting the information of the right species names.
 
 
 ```{R}
@@ -51,6 +51,8 @@ head(correctgf,n = 10L)
 
 
 ```
+Load leaf type information and check its species names
+
 ```{R}
 leaftypedic <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\Dictionary_leaftype_20210520_with_datasetid.csv')
 
@@ -88,7 +90,7 @@ write.csv(correctleaftypegenusdic, 'C:\\Users\\haozh\\Desktop\\LL\\dictionary_le
 
 
 
-Clean the dictionary
+Same with leaf habit information
 
 
 ```{R}
@@ -154,7 +156,7 @@ nrow(genusdic[genusdic$OrigValueStr_genus == 0,])/nrow(genusdic)
 nrow(correctgf)
 head(correctgf)
 ```
-
+To reduce computation pressure, splitting our dataset into different parts. 
 
 ```{R}
 subcorrectgf1<-correctgf[1:500000,]
