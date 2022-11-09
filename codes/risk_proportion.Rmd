@@ -1,0 +1,65 @@
+---
+title: "risk_pixel"
+author: "Haozhi Ma"
+date: "1/11/2022"
+output: html_document
+---
+
+This script is used for analyzing risk areas
+
+
+Load the dataset
+
+```{R}
+
+riskdf <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\risk_analysis\\risk_proportion.csv')
+
+head(riskdf)
+
+```
+
+
+```{R}
+library(ggplot2)
+
+riskdf$type <- factor(riskdf$type, levels = c('be', 'bd', 'n'))
+
+```
+
+
+```{R}
+
+p1 <- ggplot(riskdf[riskdf$time == 2041,], aes(x = type, y = pixelprop, fill = dynamic, color = ''))+
+  geom_col(position = 'dodge')+
+  scale_fill_manual(values = c("#3288BD", "#FFFFBF", "#D53E4F"))+
+  scale_color_manual(values = c('#000000'))+
+  labs(x = 'Forest functional type', y = 'Coverage (%)')+
+  theme_classic()+
+  coord_cartesian(ylim = c(0,80))+
+  theme(axis.title = element_text(color = 'black', size = 20), axis.text = element_text(color = 'black', size = 20), legend.text = element_text(color = 'black', size = 20), legend.title = element_text(color = 'black', size = 20))
+
+```
+
+```{R}
+
+p2 <- ggplot(riskdf[riskdf$time == 2071,], aes(x = type, y = pixelprop, fill = dynamic, color = ''))+
+  geom_col(position = 'dodge')+
+  scale_fill_manual(values = c("#3288BD", "#FFFFBF", "#D53E4F"))+
+  scale_color_manual(values = c('#000000'))+
+  labs(x = 'Forest functional type', y = 'Coverage (%)')+
+  theme_classic()+
+  coord_cartesian(ylim = c(0,80))+
+  theme(axis.title = element_text(color = 'black', size = 20), axis.text = element_text(color = 'black', size = 20), legend.text = element_text(color = 'black', size = 20), legend.title = element_text(color = 'black', size = 20))
+
+```
+
+```{R}
+
+library(ggpubr)
+
+
+ggarrange(p1,p2,
+          ncol = 1,
+          nrow = 2)
+
+```
