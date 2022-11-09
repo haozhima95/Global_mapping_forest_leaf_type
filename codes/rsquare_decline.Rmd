@@ -1,0 +1,191 @@
+---
+title: "r_square_decline"
+author: "Haozhi Ma"
+date: "5/18/2021"
+output: html_document
+---
+
+ This script is used for r square decline
+ 
+ 
+Load the dataset
+
+```{R}
+
+library(boot)
+
+
+```
+
+
+```{R}
+
+setwd('C:\\Users\\haozh\\Desktop\\LL\\spatial_cv')
+
+```
+
+```{R}
+#loo0km<-read.csv('loowithlonlat_classic_0km_20210515.csv')
+
+#loo100km <- read.csv('loowithonlat_classic_100km_20210515.csv')
+
+#loo150km <- read.csv('loowithlonlat_classic_150km_20210515.csv')
+
+#loo200km <- read.csv('loowithlonlat_classic_200km_20210515.csv')
+
+#loo250km <- read.csv('loowithlonlat_classic_250km_20210515.csv')
+
+#loo500km <- read.csv('loowithlonlat_classic_500km_20210515.csv')
+
+#loo1000km <- read.csv('loowithlonlat_classic_1000km_20210515.csv')
+```
+
+
+
+Create an empty dataframe
+
+```{R}
+
+spatial_cv <- data.frame(distance = numeric(),
+                         rsquare = numeric(),
+                         dev_inc = numeric(),
+                         r2_be = numeric(),
+                         r2_bd = numeric(),
+                         r2_n = numeric()
+)
+
+
+```
+
+
+```{R}
+catdev <- function(ds){
+  return(mean(sqrt((ds$be_pred - ds$be_obs)^2+(ds$bd_pred - ds$bd_obs)^2+(ds$n_pred - ds$ne_obs)^2)/2))
+}
+
+
+catmeandev <- function(ds){
+  return(mean(sqrt((ds$be_mean - ds$be_obs)^2+(ds$bd_mean - ds$bd_obs)^2+(ds$ne_mean - ds$ne_obs)^2)/2))
+}
+
+
+
+```
+
+
+
+```{R}
+bc_mean <- function(ds){
+  return(sqrt(ds$be_obs*ds$be_mean)+sqrt(ds$bd_obs*ds$bd_mean)+sqrt(ds$ne_obs*ds$ne_mean))
+}
+
+bc_model <- function(ds){
+  return(sqrt(ds$be_obs*ds$be_pred)+sqrt(ds$bd_obs*ds$bd_pred)+sqrt(ds$ne_obs*ds$n_pred))
+}
+
+
+```
+
+
+
+```{R}
+coef_rel <- function(bcmodel, bcmean){
+  return(sum(bcmodel-bcmean)/sum(1-bcmean))
+}
+
+
+
+```
+
+
+
+```{R}
+
+coef_det <- function(xtrue, xpred){
+    return(1-sum((xtrue-xpred)^2)/sum((xtrue-mean(xtrue))^2))
+}
+ 
+```
+
+```{R}
+
+for(i in c(10,100000,150000,200000,250000,500000,1000000)){
+  loo <- read.csv(paste0('spatial_cv_fft_dbh_',i,'m_20211208.csv'))
+  
+  loo$be_obs <- loo$broad_evergreen/100
+  loo$bd_obs <- loo$broad_deciduous/100
+  loo$ne_obs <- loo$needle/100
+  
+  dfbemean <- mean(loo$be_obs)
+  dfbdmean <- mean(loo$bd_obs)
+  dfnemean <- mean(loo$ne_obs)
+  #dfndmean <- mean(dfwithpred$nd_obs)
+
+
+  loo$be_mean <- dfbemean
+  loo$bd_mean <- dfbdmean
+  loo$ne_mean <- dfnemean
+  
+  print(i)
+  
+  loo$bcmean <- bc_mean(loo)
+
+  loo$bcmodel <- bc_model(loo)
+  print(i)
+  
+  print(head(loo))
+  spatial_cv[match(i,c(10,100000,150000,200000,250000,500000,1000000)),1] <- i
+  spatial_cv[match(i,c(10,100000,150000,200000,250000,500000,1000000)),2] <- coef_rel(loo$bcmodel, loo$bcmean)
+  spatial_cv[match(i,c(10,100000,150000,200000,250000,500000,1000000)),3] <- (1-catdev(loo)/catmeandev(loo))
+  spatial_cv[match(i,c(10,100000,150000,200000,250000,500000,1000000)),4] <- coef_det(loo$be_obs, loo$be_pred)
+  spatial_cv[match(i,c(10,100000,150000,200000,250000,500000,1000000)),5] <- coef_det(loo$bd_obs, loo$bd_pred)
+  spatial_cv[match(i,c(10,100000,150000,200000,250000,500000,1000000)),6] <- coef_det(loo$ne_obs, loo$n_pred)
+
+  }
+
+
+
+```
+
+
+```{R}
+
+View(spatial_cv)
+
+```
+
+
+```{R}
+spatial_cv[1,1]<-0.01
+spatial_cv[nrow(spatial_cv)+1,1]<- 0.00
+spatial_cv[nrow(spatial_cv), 2] <- 0.7028
+spatial_cv[nrow(spatial_cv), 3] <- 0.5749
+spatial_cv[nrow(spatial_cv), 4] <- 0.8015
+spatial_cv[nrow(spatial_cv), 5] <- 0.5678
+spatial_cv[nrow(spatial_cv), 6] <- 0.7017
+spatial_cv <- na.omit(spatial_cv)
+View(spatial_cv)
+```
+
+
+
+```{R}
+library(ggplot2)
+
+ggplot(na.omit(spatial_cv), aes(x = distance, y = rsquare))+
+  geom_point(size = 3, alpha = 0.5)+
+  geom_smooth(method = 'loess', se = FALSE, size = 3, alpha = 0.1, span = 0.65)+
+  coord_cartesian(ylim = c(0.65,0.75))+
+  labs(x = 'Buffer zone radius (km)', y = 'Coefficient of determination values (R2)')+
+  theme_classic()+
+  theme(axis.title = element_text(size = 20), axis.text.x = element_text(size = 20, color = 'black'), axis.text.y = element_text(size = 20, colour = 'black'))
+  
+
+
+```
+
+
+
+
+
+

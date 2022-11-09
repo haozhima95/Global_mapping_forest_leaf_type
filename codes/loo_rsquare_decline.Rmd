@@ -1,0 +1,35 @@
+---
+title: "r_square_decline"
+author: "Haozhi Ma"
+date: "6/6/2022"
+output: html_document
+---
+
+```{R}
+
+library(ggplot2)
+
+```
+
+```{R}
+
+rsquare <- c(0.715,0.6479, 0.6297,0.6298, 0.626,0.6207, 0.594, 0.5714, 0.5619,0.5583, 0.5286)
+
+distance <- c(0,10,5000,10000, 25000,50000,100000,200000, 250000, 300000,500000)
+
+
+declinedf <- data.frame(distance, rsquare)
+
+ggplot(declinedf, aes(x = distance, y = rsquare))+
+  geom_point(size = 3, alpha = 0.6)+
+  #geom_path()+
+  geom_smooth(method = 'loess', span = 0.6, se = F, size = 2, alpha = 0.5, color = 'black')+
+  geom_vline(xintercept = 300000, linetype = 2, size = 1)+
+  labs(x = 'Distance (km)', y = expression(italic(R)^2))+
+  scale_y_continuous(limits = c(0,0.8))+
+  theme_classic()+
+  theme(axis.title = element_text(size = 20), axis.text = element_text(size = 20,color = 'black'))
+
+```
+
+
