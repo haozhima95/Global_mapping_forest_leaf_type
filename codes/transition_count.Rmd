@@ -1,0 +1,58 @@
+---
+title: "transition_count"
+author: "Haozhi Ma"
+date: "5/23/2021"
+output: html_document
+---
+
+This script is used for countting how many of the plots show shift from one dominance to the other or to the mixed.
+
+Load the dataset
+
+```{R}
+
+dfwithinfo.transition <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithinfo_dominance_transition_20210523.csv')
+
+head(dfwithinfo.transition)
+
+```
+
+```{R}
+
+for(i in 1:nrow(dfwithinfo.transition)){
+  subds <- dfwithinfo.transition[i, c(7,8)]
+  #print(duplicated(subds))
+  if(subds[1,1] == subds[1,2]){
+    dfwithinfo.transition[i,'transition'] <- 0
+  }
+  else{
+    dfwithinfo.transition[i, 'transition'] <- 1
+  }
+  
+  if(i%%100 == 0){
+    print(i)
+  }
+}
+
+
+
+```
+
+```{R}
+head(dfwithinfo.transition)
+
+```
+
+```{R}
+mean(dfwithinfo.transition$transition)
+sum(dfwithinfo.transition$transition)
+
+```
+
+
+
+
+
+
+
+

@@ -1,0 +1,242 @@
+---
+title: "Untitled"
+author: "Haozhi Ma"
+date: "5/6/2022"
+output: html_document
+---
+
+```{R}
+
+ds <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithcate_with4class_20220809.csv')
+
+head(ds,100L)
+
+ds <- ds[!is.na(ds$dbh),]
+
+nrow(ds[is.na(ds$dbh),])
+```
+
+```{R}
+ds[ds$tax_genus == 'Abies','leaftype'] = 'G'
+
+ds[ds$tax_genus == 'Abies','leaftype_genus'] = 'G'
+
+ds[ds$tax_genus == 'Abies', 'broad_evergreen'] = 0
+
+ds[ds$tax_genus == 'Abies', 'needle_evergreen'] = 1
+
+ds[ds$tax_genus == 'Abies', 'class'] = 2
+
+
+```
+
+
+
+```{R}
+str(ds)
+
+head(ds)
+
+```
+
+
+```{R}
+library(dplyr)
+
+
+```
+
+
+```{R}
+
+names(ds)
+
+```
+
+
+
+
+
+```{R}
+
+ds <- ds %>%
+  group_by(LON,LAT) %>%
+  filter(year == max(year))
+
+```
+
+
+
+
+
+
+```{R}
+
+head(ds,10L)
+
+```
+
+
+```{R}
+set.seed(0)
+dswithweigh <- ds %>%
+  dplyr::group_by(LAT, LON,year) %>%
+  dplyr::summarise(count = n())
+
+head(dswithweigh)
+```
+
+```{R}
+set.seed(0)
+
+dswithweigh$random <- sample(1:nrow(dswithweigh))
+
+dswithweigh$fold <- (dswithweigh$random%%10)+1
+
+```
+
+
+```{R}
+head(dswithweigh)
+
+```
+
+```{R}
+
+nrow(dswithweigh[dswithweigh$fold == 1,])
+
+```
+
+
+
+
+
+
+```{R}
+
+library(plyr)
+
+newds <- merge(ds,dswithweigh,by = c('LAT', 'LON','year'))
+
+
+
+
+  
+  
+  
+
+
+
+
+```
+
+```{R}
+
+head(newds,400L)
+
+
+```
+
+
+
+
+
+
+```{R}
+dfplotlevel <- newds %>%
+  dplyr::group_by(LON,LAT,year) %>%
+  dplyr::summarise(be_prop_dbh = sum(broad_evergreen*dbh*dbh)/sum(dbh*dbh),
+                   be_prop_stem = sum(broad_evergreen)/n(),
+                   bd_prop_dbh = sum(broad_deciduous*dbh*dbh)/sum(dbh*dbh),
+                   bd_prop_stem = sum(broad_deciduous)/n(),
+                   ne_prop_dbh = sum(needle_evergreen*dbh*dbh)/sum(dbh*dbh),
+                   ne_prop_stem = sum(needle_evergreen)/n(),
+                   nd_prop_dbh = sum(needle_deciduous*dbh*dbh)/sum(dbh*dbh),
+                   nd_prop_stem = sum(needle_deciduous)/n(),
+                   fold = first(fold))
+
+
+```
+
+```{R}
+
+head(dfplotlevel,60L)
+
+nrow(dfplotlevel[dfplotlevel$fold == 1,])
+```
+```{R}
+
+dfplotlevel$longitude <- dfplotlevel$LON
+
+dfplotlevel$latitude <- dfplotlevel$LAT
+
+dfplotlevel$index <- 1:nrow(dfplotlevel)
+
+library(readr)
+
+write_csv(dfplotlevel, 'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\gfbi_recent_plot_info_4class_with_fold_with_index_20220809.csv')
+
+```
+
+
+
+
+
+```{R}
+library(readr)
+for(i in c(10,100,1000,250,500,1500,5000,9000,1200,2500)){
+
+  
+  set.seed(i)
+sampleddf <- newds %>% group_by(LAT,LON, year) %>%
+  sample_n(1,weight = dbh*dbh)
+
+sampleddf$longitude <- sampleddf$LON
+sampleddf$latitude <- sampleddf$LAT
+
+sampleddf <- merge(sampleddf, dfplotlevel[,c('LON', 'LAT', 'year', 'index')], by = c('LON', 'LAT', 'year'))
+
+write_csv(sampleddf, paste0('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\random_sampled_occurrence_dbh_seed',i,'_recent_withfold_with_index_20220809','.csv'))
+
+
+
+}
+```
+
+
+
+
+
+
+
+
+```{R}
+
+
+library(maps)
+library(ggplot2)
+worlddata <- map_data('world')
+
+
+
+```
+
+
+```{R}
+ggplot()+
+  geom_map(data = worlddata, map = worlddata,aes(x = long, y = lat, group = group, map_id = region),fill = '#bcbcbc',color = '#bcbcbc',size = 0.5)+
+  geom_point(data = sampleddf, aes(x = LON, y = LAT))
+
+```
+
+```{R}
+library(readr)
+
+write_csv(sampleddf, 'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\random_sampled_occurrence_dbh_seed1000.csv')
+
+```
+
+
+
+
+

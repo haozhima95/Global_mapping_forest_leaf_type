@@ -1,0 +1,78 @@
+---
+title: "weight_dbh"
+author: "Haozhi Ma"
+date: "10/7/2021"
+output: html_document
+---
+
+
+This script is used for calculating dbh based functional type proportion.
+
+
+```{R}
+
+ds <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithcate_with4class_20211208.csv')
+
+head(ds)
+
+
+
+```
+
+```{R}
+ds[ds$tax_genus == 'Abies','leaftype'] = 'G'
+
+ds[ds$tax_genus == 'Abies','leaftype_genus'] = 'G'
+
+ds[ds$tax_genus == 'Abies', 'broad_evergreen'] = 0
+
+ds[ds$tax_genus == 'Abies', 'needle_evergreen'] = 1
+
+
+```
+
+
+
+```{R}
+
+#ds$beweigh <- ds$broad_evergreen * ds$dbh * ds$dbh * ds$tph 
+
+#ds$bdweigh <- ds$broad_deciduous * ds$dbh * ds$dbh * ds$tph 
+
+#ds$nweigh <- ds$needle * ds$dbh * ds$dbh * ds$tph 
+
+#ds$plotweigh <- ds$dbh * ds$dbh * ds$tph
+
+ds$beweigh <- ds$broad_evergreen * ds$tph 
+
+ds$bdweigh <- ds$broad_deciduous * ds$tph 
+
+ds$neweigh <- ds$needle_evergreen * ds$tph 
+
+ds$ndweigh <- ds$needle_deciduous * ds$tph
+
+ds$plotweigh <- ds$tph
+
+
+
+
+```
+
+
+
+
+
+```{r}
+head(ds)
+
+
+```
+
+```{R}
+
+library(readr)
+
+write_csv(ds, 'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithcate_with_weigh_stem_4class_20211208.csv')
+
+
+```

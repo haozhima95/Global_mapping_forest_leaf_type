@@ -1,0 +1,48 @@
+---
+title: "add_column_for_uploading"
+author: "Haozhi Ma"
+date: "5/24/2021"
+output: html_document
+---
+
+
+Loading dataset
+
+```{R}
+
+ds_toadd <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithinfo_onlyrecent_stem_4class_20211208.csv')
+
+head(ds_toadd)
+```
+
+
+```{R}
+ds_toadd[duplicated(ds_toadd[,c(1:2)]),]
+
+```
+
+
+
+```{R}
+ds_toadd <- cbind(index = 1:nrow(ds_toadd), ds_toadd)
+
+ds_toadd$lon <- ds_toadd$longitude
+
+ds_toadd$lat <- ds_toadd$latitude
+
+head(ds_toadd)
+```
+
+
+```{R}
+
+library(readr)
+
+write_csv(ds_toadd,'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithinfo_recent_stem_4class_20211208.csv')
+
+```
+
+
+
+
+

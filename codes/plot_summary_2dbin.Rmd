@@ -1,0 +1,53 @@
+---
+title: "Untitled"
+author: "Haozhi Ma"
+date: "10/18/2022"
+output: html_document
+---
+
+
+```{R}
+
+df <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\gfbi_recent_plot_info_4class_with_fold_with_env_20221010.csv')
+
+names(df)
+
+```
+
+```{R}
+dfplotlevel <- df[,c('LAT','LON','area','be_prop_dbh','bd_prop_dbh','ne_prop_dbh','nd_prop_dbh','fold','index')]
+dfplotlevel$evergreen <- dfplotlevel$be_prop_dbh+dfplotlevel$ne_prop_dbh
+
+dfplotlevel$broad <- dfplotlevel$be_prop_dbh + dfplotlevel$bd_prop_dbh
+```
+
+```{R}
+library(maps)
+library(sp)
+library(rgdal)
+plotdfshp <- dfplotlevel
+
+
+coordinates(plotdfshp) = ~LON+LAT
+proj4string(plotdfshp) <- CRS('+proj=longlat +datum=WGS84')
+
+writeOGR(plotdfshp, 'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data',layer = 'gfbi_unique_lonlat_20221010', driver = 'ESRI Shapefile')
+
+
+```
+
+
+
+```{R}
+
+library(ggplot2)
+
+ggplot(dfplotlevel, aes(x = evergreen, y = broad))+
+  geom_bin_2d(bins = 16)+
+  scale_fill_viridis_c(trans = scales::log10_trans(),direction = -1)+
+  theme_classic()+
+  theme(axis.text = element_text(color = 'black', size = 20))
+```
+
+
+

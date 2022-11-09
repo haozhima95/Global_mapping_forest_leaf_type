@@ -1,0 +1,60 @@
+---
+title: "coauthorcheck"
+author: "Haozhi Ma"
+date: "4/13/2022"
+output: html_document
+---
+
+This script is used for checking the author who should be involved in the author list
+
+Load the dataset
+
+```{R}
+rawdatawithinfo <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\raregfdata_with_habit_type_20211208.csv')
+
+head(rawdatawithinfo)
+
+
+names(rawdatawithinfo)
+
+
+```
+
+
+```{R}
+
+habitlist <- rawdatawithinfo$DatasetID
+
+typelist <- rawdatawithinfo$DatasetID_leaftype
+
+```
+
+
+```{R}
+habitlist <- habitlist[!is.na(habitlist)]
+
+habitlist <- unique(habitlist)
+
+typelist <- typelist[!is.na(typelist)]
+typelist <- unique(typelist)
+
+```
+
+
+```{R}
+habitlist
+
+
+
+```
+
+
+```{R}
+
+typelist
+```
+
+
+
+
+

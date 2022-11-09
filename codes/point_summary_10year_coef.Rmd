@@ -1,0 +1,136 @@
+---
+title: "point summary"
+author: "Haozhi Ma"
+date: "12/21/2020"
+output: html_document
+---
+This script is used for summarizing point specific leaf habit change during more than ten years forest monitoring.
+
+Load the data\
+
+
+```{R}
+setwd('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data')
+
+```
+
+
+```{R}
+
+dfcoef <- read.csv('df_change_coef_10years.csv')
+dfcoef <- na.omit(dfcoef)
+head(dfcoef)
+
+
+
+
+```
+
+
+```{R}
+world<-map_data('world')
+
+ggplot()+
+  geom_polygon(data = world, aes(x = long, y = lat, group = group), fill = 'grey40', color = 'grey40', size = 0.1)+
+  geom_point(data =dfcoef, aes(x = longitude, y = latitude, colour = coef_10years))+
+  scale_colour_gradient2(limits = c(-10,10),low = 'blue', high = 'red')
+
+```
+
+
+
+
+```{R}
+
+sub1<-dfcoef[dfcoef$Biome == 'Tropical moist broadleaf forests' |dfcoef$Biome ==  'Tropical dry broadleaf forests',]
+sub1$biomecate <- 'tropical'
+
+sub2<-dfcoef[dfcoef$Biome == 'Temperate broadleaf forests' |dfcoef$Biome ==  'Temperate conifer forests',]
+sub2$biomecate <- 'temperate'
+
+sub3<-dfcoef[dfcoef$Biome == 'Boreal forests or taiga',]
+sub3$biomecate <- 'boreal'
+
+newdata<-rbind(sub1, rbind(sub2,sub3))
+library(ggplot2)
+
+ggplot(newdata, aes(x = biomecate, y = coef_10years))+
+  stat_summary(fun.data = 'mean_cl_boot' ,size = 1)+
+  geom_boxplot(width = 0.5)
+  #stat_summary(fun = mean, geom = 'line', size = 1, aes(group = cate))
+
+
+```
+
+
+```{R}
+summary(dfcoef$latitude)
+ggplot(dfcoef, aes(x = latitude))+
+  geom_histogram()
+```
+
+```{R}
+
+
+sub1<-dfcoef[dfcoef$latitude>=-40 & dfcoef$latitude<(-30),]
+sub1$latclass <- '-40~-30'
+
+sub2<-dfcoef[dfcoef$latitude>=-30 & dfcoef$latitude<(-20),]
+sub2$latclass <- '-30~-20'
+
+sub3<-dfcoef[dfcoef$latitude>=-20 & dfcoef$latitude<(-10),]
+sub3$latclass <- '-20~-10'
+
+sub4<-dfcoef[dfcoef$latitude>=-10 & dfcoef$latitude<10,]
+sub4$latclass <- '-10~10'
+
+#sub5<-dfcoef[dfcoef$latitude>=0 & dfcoef$latitude<10,]
+#sub5$latclass <- '0~10'
+
+#sub6<-dfcoef[dfcoef$latitude>=10 & dfcoef$latitude<20,]
+#sub6$latclass <- '10~20'
+
+#sub7<-dfcoef[dfcoef$latitude>=20 & dfcoef$latitude<30,]
+#sub7$latclass <-'20~30'
+
+#sub8<-dfcoef[dfcoef$latitude>=30 & dfcoef$latitude<40,]
+#sub8$latclass <- '30~40'
+
+sub9<-dfcoef[dfcoef$latitude>=40 & dfcoef$latitude<50,]
+sub9$latclass <- '40~50'
+
+sub10<-dfcoef[dfcoef$latitude>=50 & dfcoef$latitude<60,]
+sub10$latclass <- '50~60'
+
+newdata<-rbind(sub1,rbind(sub2,rbind(sub3,rbind(sub4,rbind(sub9,sub10)))))
+
+
+ggplot(newdata, aes(x = latclass, y = coef_10years))+
+  stat_summary(fun.data = 'mean_cl_boot' ,size = 1)+
+  coord_flip()
+
+```
+
+
+```{R}
+longterm<-read.csv('gflongterm.csv')
+
+head(longterm)
+
+```
+
+
+
+
+```{R}
+ggplot(data = longterm[longterm$Biome == 'Temperate broadleaf forests',], aes(x = year, y = leaf_habit))+
+  geom_smooth(aes(group = plot_id, color = Biome),method = lm, se = FALSE,alpha = 0.6)+
+  scale_color_viridis_d()
+
+```
+
+
+
+
+
+

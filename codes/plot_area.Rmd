@@ -1,0 +1,41 @@
+---
+title: "Untitled"
+author: "Haozhi Ma"
+date: "9/28/2022"
+output: html_document
+---
+
+```{R}
+
+dfplotlevel <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\gfbi_recent_plot_info_4class_with_fold_with_index_with_size_20220824.csv')
+
+
+head(dfplotlevel)
+
+names(dfplotlevel)
+
+```
+
+
+```{R}
+
+library(ggplot2)
+
+
+```
+
+```{R}
+
+ggplot(dfplotlevel, aes(x = area))+
+  geom_histogram(bins = 120)
+
+summary(dfplotlevel$area)
+
+quantile(dfplotlevel$area,0.025)
+
+quantile(dfplotlevel$area,0.975)
+```
+
+
+
+

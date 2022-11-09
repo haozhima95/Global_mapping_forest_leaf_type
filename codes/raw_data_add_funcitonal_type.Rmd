@@ -1,0 +1,88 @@
+---
+title: "create_four_cates"
+author: "Haozhi Ma"
+date: "5/21/2021"
+output: html_document
+---
+
+This script is used for creating the four forest functional types. 
+
+
+Load the dataset
+
+```{R}
+
+rawdatawithinfo <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\raregfdata_with_habit_type_20211208.csv')
+
+head(rawdatawithinfo)
+
+unique(rawdatawithinfo$OrigValueStr)
+nrow(rawdatawithinfo)
+rawdatawithinfo <- rawdatawithinfo[complete.cases(rawdatawithinfo$leaftype),]
+rawdatawithinfo <- rawdatawithinfo[complete.cases(rawdatawithinfo$OrigValueStr),]
+nrow(rawdatawithinfo)
+```
+
+```{R}
+sub.be <- rawdatawithinfo[rawdatawithinfo$OrigValueStr >= 0.5 & rawdatawithinfo$leaftype == 'A', ]
+nrow(sub.be)
+unique(sub.be$leaftype)
+sub.bd <- rawdatawithinfo[rawdatawithinfo$OrigValueStr < 0.5 & rawdatawithinfo$leaftype == 'A', ]
+nrow(sub.bd)
+unique(sub.bd$leaftype)
+sub.n <- rawdatawithinfo[rawdatawithinfo$leaftype == 'G', ]
+nrow(sub.n)
+unique(sub.n$leaftype)
+#sub.nd <- rawdatawithinfo[rawdatawithinfo$OrigValueStr < 0.5 & rawdatawithinfo$leaftype == 'G', ]
+#nrow(sub.nd)
+#unique(sub.nd$leaftype)
+
+```
+
+```{R}
+sub.be$broad_evergreen = 1
+sub.be$broad_deciduous = 0
+sub.be$needle = 0
+#sub.be$needle_deciduous = 0
+
+head(sub.be)
+```
+
+```{R}
+sub.bd$broad_evergreen = 0
+sub.bd$broad_deciduous = 1
+sub.bd$needle = 0
+#sub.bd$needle_deciduous = 0
+
+head(sub.bd)
+```
+
+```{R}
+sub.n$broad_evergreen = 0
+sub.n$broad_deciduous = 0
+sub.n$needle = 1
+#sub.ne$needle_deciduous = 0
+
+head(sub.n)
+```
+
+
+
+```{R}
+
+dswithcate <- rbind(sub.be,rbind(sub.bd,sub.n))
+
+nrow(dswithcate)
+
+head(dswithcate)
+
+
+```
+
+```{R}
+write.csv(dswithcate, 'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithcate_20211208.csv')
+
+```
+
+
+

@@ -1,0 +1,78 @@
+---
+title: "aggregate_for_unique_coordinates"
+author: "Haozhi Ma"
+date: "5/24/2021"
+output: html_document
+---
+
+Python seems fail to aggregate points by latitude and longitude.
+
+Here in this script we try to aggregate by longitude and latitude
+
+
+Load the data
+
+```{R}
+dsrecent <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithinfo_onlyrecent_20210523.csv')
+
+head(dsrecent)
+dsrecent$longitude<- as.numeric(dsrecent$longitude)
+dsrecent$latitude <- as.numeric(dsrecent$latitude)
+```
+```{R}
+
+lon <- dsrecent$longitude
+is.numeric(lon)
+dsrecent$lon<-round(lon, 4)
+
+
+lat <- dsrecent$latitude
+is.numeric(lat)
+dsrecent$lat<-round(lat, 4)
+#dsrecent$longitude <- round(dsrecent$longtitude, 4)
+#dsrecent$latitude <- round(dsrecent$latitude, 4)
+
+head(dsrecent)
+#View(dsrecent)
+```
+
+
+Aggregate
+
+```{R}
+library(dplyr)
+
+dsunique<- dsrecent %>% 
+  group_by(lon, lat) %>%
+  summarize_at(vars('longitude','latitude', 'broad_evergreen', 'broad_deciduous', 'needle_evergreen', 'needle_deciduous'), mean)
+
+
+```
+
+```{R}
+View(dsunique)
+
+```
+
+
+```{R}
+head(dsunique, 1000)
+
+```
+
+```{R}
+dsunique[duplicated(dsunique[,c('longitude', 'latitude')]),]
+
+```
+
+
+```{R}
+write.csv(dsunique, 'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithinfo_recent_unique_from_r_for_gee.csv')
+
+
+```
+
+
+
+
+

@@ -1,0 +1,52 @@
+---
+title: "proportion_calculation"
+author: "Haozhi Ma"
+date: "10/7/2021"
+output: html_document
+---
+
+This script is used for calculating the total proportion of different forest functional types.
+
+Load the data
+
+```{R}
+dsaggregated <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithinfo_aggregated_stem_20211208.csv')
+
+head(dsaggregated)
+
+names(dsaggregated) <- c('plot_id', 'year', 'X', 'longitude', 'latitude', 'Biome', 'beweigh', 'bdweigh', 'nweigh', 'plotweigh')
+
+head(dsaggregated)
+```
+
+```{R}
+
+dsaggregated$broad_evergreen <- (dsaggregated$beweigh/dsaggregated$plotweigh)*100
+
+dsaggregated$broad_deciduous <- (dsaggregated$bdweigh/dsaggregated$plotweigh)*100
+
+dsaggregated$needle <- (dsaggregated$nweigh/dsaggregated$plotweigh)*100
+
+
+```
+
+
+```{R}
+head(dsaggregated)
+
+
+```
+
+
+
+```{R}
+
+write.csv(dsaggregated, 'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\dswithinfo_aggregated_proportion_stem_20211208.csv')
+
+
+```
+
+
+
+
+
