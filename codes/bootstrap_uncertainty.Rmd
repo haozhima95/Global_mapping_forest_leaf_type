@@ -1,0 +1,67 @@
+---
+title: "mean_std_relationship"
+author: "Haozhi Ma"
+date: "10/28/2021"
+output: html_document
+---
+
+This script is used for checking the relationships between mean and stds
+
+
+```{R}
+
+sampledpoints <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\functional_type_grid_search\\sampled_uncertainty_dbh_20211208.csv')
+names(sampledpoints)
+
+```
+
+
+```{R}
+library(ggplot2)
+
+```
+
+
+
+```{R}
+plottheme <- theme(axis.title = element_text(color = 'black', size = 30), axis.text = element_text(color = 'black', size = 20))
+
+
+p3<-ggplot(sampledpoints, aes(x = n_dbh_bootstrapped_mean, y = n_dbh_bootstrapped_stdDev))+
+  geom_point(alpha = 0.1)+
+  geom_smooth()+
+  theme_classic()+
+  plottheme
+
+
+p1<-ggplot(sampledpoints, aes(x = be_dbh_bootstrapped_mean, y = be_dbh_bootstrapped_stdDev))+
+  geom_point(alpha = 0.1)+
+  geom_smooth()+
+  theme_classic()+
+  plottheme
+
+
+p2<-ggplot(sampledpoints, aes(x = bd_dbh_bootstrapped_mean, y = bd_dbh_bootstrapped_stdDev))+
+  geom_point(alpha = 0.1)+
+  geom_smooth()+
+  theme_classic()+
+  plottheme
+
+
+```
+
+
+
+```{R}
+library(ggpubr)
+
+
+ggarrange(p1,p2,p3,
+          nrow = 1,
+          ncol = 3)
+
+
+```
+
+
+
