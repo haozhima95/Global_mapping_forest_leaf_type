@@ -14,12 +14,12 @@ This script is used for initiate a BC function to assess the model accuracy
 Load the dataset
 
 ```{R}
-dsr <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\functional_type_grid_search\\cv_validation\\classifiedvalidation_fold_1_ntree250_mtry20_minleaf20_dbh_full_var_recent_occurrence_20221010.csv')
+dsr <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\modelprediction\\modelcomparison_dfrfstem_subtallo_20221010.csv')
 
-for(i in 2:10){
-  addon <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\functional_type_grid_search\\cv_validation\\classifiedvalidation_fold_',i,'_ntree250_mtry20_minleaf20_dbh_full_var_recent_occurrence_20221010.csv'))
-  dsr <- rbind(dsr,addon)
-}
+#for(i in 2:10){
+#  addon <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\functional_type_grid_search\\cv_validation\\classifiedvalidation_fold_',i,'_ntree250_mtry20_minleaf20_dbh_full_var_recent_occurrence_20221010.csv'))
+#  dsr <- rbind(dsr,addon)
+#}
 
 
 
@@ -37,14 +37,18 @@ for(i in 2:10){
 
 dfwithpred <- dsr
 
+dfwithpred$n_prop_stem <- dfwithpred$ne_prop_stem + dfwithpred$nd_prop_stem
+dfwithpred$n_pred_mean <- dfwithpred$ne_pred_mean + dfwithpred$ne_pred_mean
+
+
 names(dfwithpred)
 ```
 
 ```{R}
-dfwithpred$be_obs <- dfwithpred$broad_evergreen/100.0
-dfwithpred$bd_obs <- dfwithpred$broad_deciduous/100.0
-dfwithpred$ne_obs <- dfwithpred$needle/100.0
-dfwithpred$nd_obs <- dfwithpred$needle_deciduous/100.0
+#dfwithpred$be_obs <- dfwithpred$broad_evergreen/100.0
+#dfwithpred$bd_obs <- dfwithpred$broad_deciduous/100.0
+#dfwithpred$ne_obs <- dfwithpred$needle/100.0
+#dfwithpred$nd_obs <- dfwithpred$needle_deciduous/100.0
 
 
 
@@ -56,16 +60,18 @@ Calculate the mean of all the proportions across all the points
 
 
 ```{R}
-dfbemean <- mean(dfwithpred$be_prop_dbh)
-dfbdmean <- mean(dfwithpred$bd_prop_dbh)
-dfnemean <- mean(dfwithpred$ne_prop_dbh)
-dfndmean <- mean(dfwithpred$nd_prop_dbh)
-
+dfbemean <- mean(dfwithpred$be_prop_stem)
+dfbdmean <- mean(dfwithpred$bd_prop_stem)
+dfnemean <- mean(dfwithpred$ne_prop_stem)
+dfndmean <- mean(dfwithpred$nd_prop_stem)
+dfnmean <- mean(dfwithpred$n_prop_stem)
 
 dfwithpred$be_mean <- dfbemean
 dfwithpred$bd_mean <- dfbdmean
 dfwithpred$ne_mean <- dfnemean
 dfwithpred$nd_mean <- dfndmean
+
+dfwithpred$n_mean <- dfnmean
 
 
 ```
@@ -74,11 +80,11 @@ initiate the function
 
 ```{R}
 bc_mean <- function(ds){
-  return(sqrt(ds$be_prop_dbh*ds$be_mean)+sqrt(ds$bd_prop_dbh*ds$bd_mean)+sqrt(ds$ne_prop_dbh*ds$ne_mean)+sqrt(ds$nd_prop_dbh*ds$nd_mean))
+  return(sqrt(ds$be_prop_stem*ds$be_mean)+sqrt(ds$bd_prop_stem*ds$bd_mean)+sqrt(ds$ne_prop_stem*ds$ne_mean)+sqrt(ds$nd_prop_stem*ds$nd_mean))
 }
 
 bc_model <- function(ds){
-  return(sqrt(ds$be_prop_dbh*ds$be_pred)+sqrt(ds$bd_prop_dbh*ds$bd_pred)+sqrt(ds$ne_prop_dbh*ds$ne_pred)+sqrt(ds$nd_prop_dbh*ds$nd_pred))
+  return(sqrt(ds$be_prop_stem*ds$be_pred_mean)+sqrt(ds$bd_prop_stem*ds$bd_pred_mean)+sqrt(ds$ne_prop_stem*ds$ne_pred_mean)+sqrt(ds$nd_prop_stem*ds$nd_pred_mean))
 }
 
 
@@ -103,7 +109,6 @@ Initiate a function for calculating RelRMSE
 coef_rel <- function(bcmodel, bcmean){
   return(sum(bcmodel-bcmean)/sum(1-bcmean))
 }
-
 
 
 ```

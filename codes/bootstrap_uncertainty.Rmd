@@ -10,7 +10,7 @@ This script is used for checking the relationships between mean and stds
 
 ```{R}
 
-sampledpoints <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\functional_type_grid_search\\sampled_uncertainty_dbh_20211208.csv')
+sampledpoints <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\modelprediction\\std_gfbi_summary_in_dominants.csv')
 names(sampledpoints)
 
 ```
@@ -27,12 +27,41 @@ library(ggplot2)
 plottheme <- theme(axis.title = element_text(color = 'black', size = 30), axis.text = element_text(color = 'black', size = 20))
 
 
-p3<-ggplot(sampledpoints, aes(x = n_dbh_bootstrapped_mean, y = n_dbh_bootstrapped_stdDev))+
+p3<-ggplot(sampledpoints, aes(x = ne_prop_dbh, y = ne_pred_stdDev, group = dominant, color = dominant))+
   geom_point(alpha = 0.1)+
-  geom_smooth()+
+  geom_smooth(method = 'gam')+
+  theme_classic()+
+  plottheme+
+  scale_color_viridis_c()
+
+
+
+q1 <-ggplot(sampledpoints, aes(x = as.factor(dominant), y = be_pred_stdDev))+
+  #stat_summary(fun.data = 'mean_cl_boot',size = 1,geom = 'bar')+
+  geom_boxplot(outlier.shape = NA,notch = FALSE)+
   theme_classic()+
   plottheme
 
+q2 <- ggplot(sampledpoints, aes(x = as.factor(dominant), y = bd_pred_stdDev))+
+  #stat_summary(fun.data = 'mean_cl_boot',size = 1,geom = 'bar')+
+  geom_boxplot(outlier.shape = NA,notch = FALSE)+
+  theme_classic()+
+  plottheme
+
+
+#summary(anova(ne_pred_stdDev~as.factor(dominant),data = sampledpoints))
+q3 <- ggplot(sampledpoints, aes(x = as.factor(dominant), y = ne_pred_stdDev))+
+  #stat_summary(fun.data = 'mean_cl_boot',size = 1,geom = 'bar')+
+  geom_boxplot(outlier.shape = NA,notch = FALSE)+
+  theme_classic()+
+  plottheme
+
+
+q4 <- ggplot(sampledpoints, aes(x = as.factor(dominant), y = nd_pred_stdDev))+
+  #stat_summary(fun.data = 'mean_cl_boot',size = 1,geom = 'bar')+
+  geom_boxplot(outlier.shape = NA,notch = FALSE)+
+  theme_classic()+
+  plottheme
 
 p1<-ggplot(sampledpoints, aes(x = be_dbh_bootstrapped_mean, y = be_dbh_bootstrapped_stdDev))+
   geom_point(alpha = 0.1)+
@@ -59,6 +88,15 @@ library(ggpubr)
 ggarrange(p1,p2,p3,
           nrow = 1,
           ncol = 3)
+
+
+
+ggarrange(q1,q2,
+          q3,q4,
+          nrow = 2,
+          ncol = 2)
+
+
 
 
 ```
