@@ -18,7 +18,7 @@ var seedlist = JSsequence(numberOfSubsets);
 
 seedlist.map(function(seedtouse){
 
-var df = ee.FeatureCollection('users/haozhima95/mapping_forest_functional_type/random_sampled_occurrence_stem_'+seedtouse+'_recent_withfold_with_index_20221010'); // File name, change it to your own
+var df = ee.FeatureCollection('users/haozhima95/mapping_forest_functional_type/random_sampled_occurrence_stem_'+seedtouse+'_recent_withfold_with_index_20221010'); // File name, change it to your own. Stem can be changed into dbh. 
 print(df.size())
 
 
