@@ -1,0 +1,597 @@
+---
+title: "varimp_summary"
+author: "Haozhi Ma"
+date: "8/17/2022"
+output: html_document
+---
+
+
+This script is used for summarizing variable importances got from grid searches. Best ten models are loaded
+
+
+```{R}
+
+broadimp <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_broad_all1_varip_20221028.csv')
+
+
+broadimp$modelname <- 'model1'
+
+
+```
+
+```{R}
+
+for(i in 2:10){
+  addon <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_broad_all',i,'_varip_20221028.csv'))
+  
+  addon$modelname <- paste0('model',i)
+  
+  broadimp <- rbind(broadimp, addon)
+  
+}
+
+
+broadimp <- broadimp[order(broadimp$variable),]
+
+featurecate <- c(rep('Climate',60), rep('Soil',60), rep('Topography',60))
+
+broadimp$featurecate <- featurecate
+
+```
+
+
+```{R}
+
+head(broadimp, 10L)
+
+```
+
+```{R}
+
+library(dplyr)
+
+library(ggplot2)
+
+
+```
+
+
+```{R}
+
+broadsum <- broadimp %>% group_by(variable, featurecate) %>%
+  dplyr::summarise(
+                   percentage_mean = mean(percentage)) %>%
+  ungroup()
+
+```
+
+
+
+```{R}
+library(ggplot2)
+
+broadp0<-ggplot(broadsum, aes(x = featurecate, y = percentage_mean, fill = variable))+
+  geom_bar(position = 'stack', stat = 'identity')+
+  scale_fill_viridis_d()+
+  scale_y_continuous(limits = c(0,0.6))+
+  theme_classic()+
+  theme(axis.title = element_blank(), axis.text.x = element_text(size = 20, color = 'black'), axis.text.y = element_text(size = 20, color = 'black'),legend.position ='none')+
+  coord_flip()
+
+
+
+ggplot(broadsum, aes(x = featurecate, y = percentage_mean, fill = variable))+
+  geom_bar(position = 'stack', stat = 'identity')+
+  scale_fill_viridis_d()+
+  scale_y_continuous(limits = c(0,0.6))+
+  theme_classic()+
+  theme(axis.title = element_blank(), axis.text.x = element_text(size = 20, color = 'black'), axis.text.y = element_text(size = 20, color = 'black'))+
+  coord_flip()
+
+```
+
+
+
+
+
+
+
+```{R}
+
+#broadimp$variable <- factor(broadimp$variable, levels = )
+
+varnames = unique(broadimp$variable)
+
+varnames <- varnames[order(varnames,decreasing = T)]
+
+
+
+broadimp$variable <- factor(broadimp$variable, levels = varnames)
+
+
+
+broadp1<-ggplot(broadimp, aes(x = variable, y = percentage))+
+  stat_summary(fun.data = 'mean_cl_normal', geom = 'errorbar',width = 0.5)+
+  stat_summary(fun.y = mean, geom = 'bar', alpha = 0, color = 'black')+
+  scale_y_continuous(limits = c(0,0.6))+
+  theme_classic()+
+  theme(axis.title = element_blank(), axis.text.x = element_text(size = 20, color = 'black'), axis.text.y = element_blank())+
+  coord_flip()
+
+ggplot(broadimp, aes(x = variable, y = percentage))+
+  stat_summary(fun.data = 'mean_cl_normal', geom = 'errorbar',width = 0.5)+
+  stat_summary(fun.y = mean, geom = 'bar', alpha = 0, color = 'black')+
+  scale_y_continuous(limits = c(0,0.6))+
+  theme_classic()+
+  theme(axis.title = element_text(size = 30, color = 'black'), axis.text.x = element_text(size = 20, color = 'black', vjust = 0.5), axis.text.y = element_text(size = 20, color = 'black'))+
+  coord_flip()
+
+```
+
+
+
+
+
+```{R}
+
+deimp <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_de_all1_varip_20221028.csv')
+
+
+deimp$modelname <- 'model1'
+
+
+```
+
+```{R}
+
+for(i in 2:10){
+  addon <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_de_all',i,'_varip_20221028.csv'))
+  
+  addon$modelname <- paste0('model',i)
+  
+  deimp <- rbind(deimp, addon)
+  
+}
+
+
+deimp <- deimp[order(deimp$variable),]
+
+featurecate <- c(rep('Climate',60), rep('Soil',60), rep('Topography',60))
+
+deimp$featurecate <- featurecate
+
+
+```
+
+
+```{R}
+
+head(deimp, 10L)
+
+```
+
+```{R}
+
+library(dplyr)
+
+library(ggplot2)
+
+
+```
+
+
+```{R}
+
+desum <-deimp %>% group_by(variable, featurecate) %>%
+  dplyr::summarise(
+                   percentage_mean = mean(percentage)) %>%
+  ungroup()
+
+```
+
+
+
+```{R}
+library(ggplot2)
+
+dep0<-ggplot(desum, aes(x = featurecate, y = percentage_mean, fill = variable))+
+  geom_bar(position = 'stack', stat = 'identity')+
+  scale_fill_viridis_d()+
+  scale_y_continuous(limits = c(0,0.6))+
+  theme_classic()+
+  theme(axis.title = element_blank(), axis.text.x = element_text(size = 20, color = 'black'), axis.text.y = element_text(size = 20, color = 'black'),legend.position ='none')+
+  coord_flip()
+
+
+ggplot(desum, aes(x = featurecate, y = percentage_mean, fill = variable))+
+  geom_bar(position = 'stack', stat = 'identity')+
+  scale_fill_viridis_d()+
+  scale_y_continuous(limits = c(0,0.6))+
+  theme_classic()+
+  theme(axis.title = element_blank(), axis.text.x = element_text(size = 20, color = 'black'), axis.text.y = element_text(size = 20, color = 'black'))+
+  coord_flip()
+
+```
+
+
+
+```{R}
+
+#broadimp$variable <- factor(broadimp$variable, levels = )
+varnames = unique(deimp$variable)
+
+varnames <- varnames[order(varnames,decreasing = T)]
+
+
+
+deimp$variable <- factor(deimp$variable, levels = varnames)
+
+
+dep1<-ggplot(deimp, aes(x = variable, y = percentage))+
+  stat_summary(fun.data = 'mean_cl_normal', geom = 'errorbar',width = 0.5)+
+  stat_summary(fun.y = mean, geom = 'bar', alpha = 0, color = 'black')+
+  theme_classic()+
+  scale_y_continuous(limits = c(0,0.6))+
+  theme(axis.title = element_blank(), axis.text.x = element_text(size = 20, color = 'black', vjust = 0.5), axis.text.y = element_blank())+
+  coord_flip()
+
+
+ggplot(deimp, aes(x = variable, y = percentage))+
+  stat_summary(fun.data = 'mean_cl_normal', geom = 'errorbar',width = 0.5)+
+  stat_summary(fun.y = mean, geom = 'bar', alpha = 0, color = 'black')+
+  theme_classic()+
+  scale_y_continuous(limits = c(0,0.6))+
+  theme(axis.title = element_text(size = 30, color = 'black'), axis.text.x = element_text(size = 20, color = 'black', vjust = 0.5), axis.text.y = element_text(size = 20, color = 'black'))+
+  coord_flip()
+```
+
+
+
+
+```{R}
+
+deimp <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_allprecisevar_de_all1_varip_20221028.csv')
+
+
+deimp$modelname <- 'model1'
+
+
+```
+
+
+
+```{R}
+
+for(i in 2:10){
+  addon <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_allprecisevar_de_all',i,'_varip_20221028.csv'))
+  
+  addon$modelname <- paste0('model',i)
+  
+  deimp <- rbind(deimp, addon)
+  
+}
+
+```
+
+
+```{R}
+
+head(deimp, 10L)
+
+```
+
+```{R}
+
+library(dplyr)
+
+library(ggplot2)
+
+
+```
+
+
+```{R}
+
+desum <- deimp %>% group_by(variable) %>%
+  dplyr::summarise(relative_importance_mean = mean(relative_importance),
+                   scaled_importance_mean = mean(scaled_importance),
+                   percentage_mean = mean(percentage)) %>%
+  ungroup()
+
+```
+
+
+
+```{R}
+
+#broadimp$variable <- factor(broadimp$variable, levels = )
+
+
+varnames = unique(deimp$variable)
+
+varnames <- varnames[order(varnames,decreasing = T)]
+
+
+deimp$variable <- factor(deimp$variable, levels = c(#'CHELSA_Temperature_Seasonality',
+
+  
+  'CanopyHeight',
+  'Tree_Density',
+  'forest_age_TC000',
+  #'Depth_to_Water_Table',
+  'EarthEnvTopoMed_ProfileCurvature',
+  'EarthEnvTopoMed_Eastness',
+  'EarthEnvTopoMed_Northness',
+  'EarthEnvTopoMed_AspectCosine',
+  
+  'EarthEnvTopoMed_AspectSine',
+  'EarthEnvTopoMed_Roughness',
+  'EarthEnvTopoMed_Slope',
+  'EarthEnvTopoMed_Elevation',
+  #'WorldClim2_SolarRadiation_AnnualMean',
+  #'WorldClim2_WindSpeed_AnnualMean',
+  #'EarthEnvCloudCover_MODCF_interannualSD',
+  #'EarthEnvCloudCover_MODCF_intraannualSD',
+  #'EarthEnvCloudCover_MODCF_meanannual',
+  
+  #'Tree_Density',
+  #'Human_Development_Percentage',
+  #'HumanFootprint'
+  'cnRatio',
+  
+  'SG_Nitrogen_Mean_0_100cm',
+  'SG_Absolute_depth_to_bedrock',
+  #'CHELSA_Max_Temperature_of_Warmest_Month',
+ 
+  
+  #'CHELSA_Mean_Temperature_of_Driest_Quarter',
+  
+  #'CHELSA_Mean_Temperature_of_Wettest_Quarter',
+  #'CHELSA_Min_Temperature_of_Coldest_Month',
+  
+  #'CHELSA_Precipitation_of_Coldest_Quarter',
+  #'CHELSA_Precipitation_of_Driest_Month',
+  
+  #'CHELSA_Precipitation_of_Warmest_Quarter',
+  #'CHELSA_Precipitation_of_Wettest_Month',
+  'soil_moisture',
+  'SG_Sand_Content_0_100cm',
+  
+  'SG_Coarse_fragments_0_100cm',
+  'SG_Soil_pH_H2O_0_100cm',
+  'SG_Clay_Content_0_100cm',
+  'SG_Silt_Content_0_100cm',
+  'CHELSA_Precipitation_of_Driest_Quarter',
+  'Aridity_Index',
+  'CHELSA_Precipitation_of_Wettest_Quarter',
+  
+  
+  
+  'CHELSA_Annual_Precipitation',
+  'CHELSA_Precipitation_Seasonality',
+  'PET',
+  'CHELSA_Annual_Mean_Temperature',
+  'CHELSA_Mean_Diurnal_Range',
+  'CHELSA_Mean_Temperature_of_Coldest_Quarter',
+  'CHELSA_Mean_Temperature_of_Warmest_Quarter',
+  'CHELSA_Temperature_Annual_Range',
+  'CHELSA_Isothermality'
+  ))
+
+
+
+dep2<-ggplot(deimp, aes(x = variable, y = percentage))+
+  stat_summary(fun.data = 'mean_cl_normal', geom = 'errorbar',width = 0.5)+
+  stat_summary(fun.y = mean, geom = 'bar', alpha = 0, color = 'black')+
+  theme_classic()+
+  scale_y_continuous(limits = c(0,0.31))+
+  theme(axis.title = element_blank(), axis.text.x = element_text(size = 20, color = 'black', vjust = 0.5), axis.text.y = element_blank())+
+  coord_flip()
+
+
+
+ggplot(deimp, aes(x = variable, y = percentage))+
+  stat_summary(fun.data = 'mean_cl_normal', geom = 'errorbar',width = 0.5)+
+  stat_summary(fun.y = mean, geom = 'bar', alpha = 0, color = 'black')+
+  theme_classic()+
+  scale_y_continuous(limits = c(0,0.31))+
+  theme(axis.title = element_text(size = 30, color = 'black'), axis.text.x = element_text(size = 20, color = 'black', vjust = 0.5), axis.text.y = element_text(size = 20, color = 'black'))+
+  coord_flip()
+
+```
+
+
+
+
+
+```{R}
+
+broadimp <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_allprecisevar_broad_all1_varip_20221028.csv')
+
+
+broadimp$modelname <- 'model1'
+
+
+```
+
+```{R}
+
+for(i in 2:10){
+  addon <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_allprecisevar_broad_all',i,'_varip_20221028.csv'))
+  
+  addon$modelname <- paste0('model',i)
+  
+  broadimp <- rbind(broadimp, addon)
+  
+}
+
+```
+
+
+```{R}
+
+head(broadimp, 10L)
+
+```
+
+```{R}
+
+library(dplyr)
+
+library(ggplot2)
+
+
+```
+
+
+```{R}
+
+broadsum <- broadimp %>% group_by(variable) %>%
+  dplyr::summarise(relative_importance_mean = mean(relative_importance),
+                   scaled_importance_mean = mean(scaled_importance),
+                   percentage_mean = mean(percentage)) %>%
+  ungroup()
+
+```
+
+
+
+```{R}
+
+#broadimp$variable <- factor(broadimp$variable, levels = )
+
+broadimp$variable <- factor(broadimp$variable, levels = c(#'CHELSA_Temperature_Seasonality',
+
+  
+  'CanopyHeight',
+  'Tree_Density',
+  'forest_age_TC000',
+  #'Depth_to_Water_Table',
+  'EarthEnvTopoMed_ProfileCurvature',
+  'EarthEnvTopoMed_Eastness',
+  'EarthEnvTopoMed_Northness',
+  'EarthEnvTopoMed_AspectCosine',
+  
+  'EarthEnvTopoMed_AspectSine',
+  'EarthEnvTopoMed_Roughness',
+  'EarthEnvTopoMed_Slope',
+  'EarthEnvTopoMed_Elevation',
+  #'WorldClim2_SolarRadiation_AnnualMean',
+  #'WorldClim2_WindSpeed_AnnualMean',
+  #'EarthEnvCloudCover_MODCF_interannualSD',
+  #'EarthEnvCloudCover_MODCF_intraannualSD',
+  #'EarthEnvCloudCover_MODCF_meanannual',
+  
+  #'Tree_Density',
+  #'Human_Development_Percentage',
+  #'HumanFootprint'
+  'cnRatio',
+  
+  'SG_Nitrogen_Mean_0_100cm',
+  'SG_Absolute_depth_to_bedrock',
+  #'CHELSA_Max_Temperature_of_Warmest_Month',
+ 
+  
+  #'CHELSA_Mean_Temperature_of_Driest_Quarter',
+  
+  #'CHELSA_Mean_Temperature_of_Wettest_Quarter',
+  #'CHELSA_Min_Temperature_of_Coldest_Month',
+  
+  #'CHELSA_Precipitation_of_Coldest_Quarter',
+  #'CHELSA_Precipitation_of_Driest_Month',
+  
+  #'CHELSA_Precipitation_of_Warmest_Quarter',
+  #'CHELSA_Precipitation_of_Wettest_Month',
+  'soil_moisture',
+  'SG_Sand_Content_0_100cm',
+  
+  'SG_Coarse_fragments_0_100cm',
+  'SG_Soil_pH_H2O_0_100cm',
+  'SG_Clay_Content_0_100cm',
+  'SG_Silt_Content_0_100cm',
+  'CHELSA_Precipitation_of_Driest_Quarter',
+  'Aridity_Index',
+  'CHELSA_Precipitation_of_Wettest_Quarter',
+  
+  
+  
+  'CHELSA_Annual_Precipitation',
+  'CHELSA_Precipitation_Seasonality',
+  'PET',
+  'CHELSA_Annual_Mean_Temperature',
+  'CHELSA_Mean_Diurnal_Range',
+  'CHELSA_Mean_Temperature_of_Coldest_Quarter',
+  'CHELSA_Mean_Temperature_of_Warmest_Quarter',
+  'CHELSA_Temperature_Annual_Range',
+  'CHELSA_Isothermality'))
+
+
+broadp2<-ggplot(broadimp, aes(x = variable, y = percentage))+
+  stat_summary(fun.data = 'mean_cl_normal', geom = 'errorbar',width = 0.5)+
+  stat_summary(fun.y = mean, geom = 'bar', alpha = 0, color = 'black')+
+  theme_classic()+
+  scale_y_continuous(limits = c(0,0.31))+
+  theme(axis.title = element_blank(), axis.text.x = element_text(size = 20, color = 'black', vjust = 0.5), axis.text.y = element_blank())+
+  coord_flip()
+
+
+
+ggplot(broadimp, aes(x = variable, y = percentage))+
+  stat_summary(fun.data = 'mean_cl_normal', geom = 'errorbar',width = 0.5)+
+  stat_summary(fun.y = mean, geom = 'bar', alpha = 0, color = 'black')+
+  theme_classic()+
+  scale_y_continuous(limits = c(0,0.31))+
+  theme(axis.title = element_text(size = 30, color = 'black'), axis.text.x = element_text(size = 20, color = 'black', vjust = 0.5), axis.text.y = element_text(size = 20, color = 'black'))+
+  coord_flip()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{R}
+library(ggpubr)
+library(gridExtra)
+library(cowplot)
+
+ggarrange(dep0, broadp0,
+          dep2, broadp2,
+
+          ncol = 2,
+          nrow = 2)
+
+plot_grid(dep0, broadp0,
+          dep2, broadp2,
+          
+          nrow = 2,
+          ncol = 2,
+          rel_heights = c(1/3,2/3))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
