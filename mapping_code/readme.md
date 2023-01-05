@@ -16,4 +16,20 @@
 
 - **To summarize the maps predicted by different CMIP6 models**, run the files named "[fft_fut_clim_summary.js](mapping_code/fft_fut_clim_summary.js)" and "[fut_fft_summary_allmodel.js](mapping_code/fut_fft_summary_allmodel.js)". 
 
-- 
+#### Below are the files that present the global map of forest leaf type changes, shown in _Fig.5_. 
+
+- **To map the global leaf type change**, run the file named "[fft_fut_decrease_most_occurrence.js](mapping_code/fft_fut_decrease_most_occurrence.js)".
+
+- **To map the global change of the degree of evergreen**, run the file named "[eve_diff_fut_now.js](mapping_code/eve_diff_fut_now.js)".
+
+- **To map the global change of the degree of broadleaved**, run the file named "[broad_diff_fut_now.js](mapping_code/eve_diff_fut_now.js)".
+
+#### Below are the files that present global distribution of forest type and future forest type changes, shown in _Fig.S9, S10 & S11_.
+
+- **To map the global distribution of forest type and map forest type change**, run the file named "[forest_type_change.js](mapping_code/forest_type_change.js)". 
+
+#### Below are the files that map global forest leaf type distribution using different models, also shown in _Fig.S12_.
+
+- To map the forest leaf type distribution using CART model, run the file named "[fft_probability_mapping_cart.js](mapping_code/fft_probability_mapping_cart.js)".
+
+- To map the forest leaf type distribution using GTB model, run the file named "[fft_probability_mapping_GTB.js](mapping_code/fft_probability_mapping_GTB.js)"
