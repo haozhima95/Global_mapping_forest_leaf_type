@@ -30,6 +30,6 @@
 
 #### Below are the files that map global forest leaf type distribution using different models, also shown in _Fig.S12_.
 
-- To map the forest leaf type distribution using CART model, run the file named "[fft_probability_mapping_cart.js](mapping_code/fft_probability_mapping_cart.js)".
+- **To map the forest leaf type distribution using CART model**, run the file named "[fft_probability_mapping_cart.js](mapping_code/fft_probability_mapping_cart.js)".
 
-- To map the forest leaf type distribution using GTB model, run the file named "[fft_probability_mapping_GTB.js](mapping_code/fft_probability_mapping_GTB.js)"
+- **To map the forest leaf type distribution using GTB model**, run the file named "[fft_probability_mapping_GTB.js](mapping_code/fft_probability_mapping_GTB.js)"
