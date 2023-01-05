@@ -13,3 +13,7 @@
 #### Below are the files predicting future climate change envelopes and global statistics. 
 
 - **To predict future forest leaf type distribution due to climate change**, run the file named "[fft_fut_mapping.js](mapping_code/fft_fut_mapping.js)". 
+
+- **To summarize the maps predicted by different CMIP6 models**, run the files named "[fft_fut_clim_summary.js](mapping_code/fft_fut_clim_summary.js)" and "[fut_fft_summary_allmodel.js](mapping_code/fut_fft_summary_allmodel.js)". 
+
+- 
