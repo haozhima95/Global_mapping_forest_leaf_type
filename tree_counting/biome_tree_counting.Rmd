@@ -1,0 +1,559 @@
+---
+title: "biome_tree_counting"
+author: "Haozhi Ma"
+date: "3/14/2022"
+output: html_document
+---
+
+This script is used for counting the number of trees by biome in different forest types.
+
+
+Needle evergreen
+
+
+```{R}
+s <- 0
+for(i in c(1:14)){
+  nebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_ne_20220824.csv'))
+  
+  s <- s+sum(nebiomedf$sum)
+}
+
+```
+```{R}
+
+nesum <- s
+
+```
+
+
+```{R}
+stropical <- 0
+
+for(i in c(1,3,14)){
+  nebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_ne_20220824.csv'))
+  stropical <- stropical + sum(nebiomedf$sum)
+}
+
+ne_tropical <- stropical/s
+```
+
+```{R}
+stemperate <- 0
+
+for(i in c(4,5)){
+  nebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_ne_20220824.csv'))
+  stemperate <- stemperate + sum(nebiomedf$sum)
+}
+
+ne_temperate <- stemperate/s
+```
+
+
+```{R}
+sboreal <- 0
+
+for(i in c(6,10,11)){
+  nebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_ne_20220824.csv'))
+  sboreal <- sboreal + sum(nebiomedf$sum)
+}
+
+ne_boreal <- sboreal/s
+```
+```{R}
+sdry <- 0
+
+for(i in c(2,7,8,12,13)){
+  nebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_ne_20220824.csv'))
+  sdry <- sdry + sum(nebiomedf$sum)
+}
+
+ne_arid <- sdry/s
+```
+
+
+```{R}
+sother <- 0
+
+nebiomedf <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_9_in_ne_20220824.csv')
+sother <- sother + sum(nebiomedf$sum)
+
+neother <- sother/s
+
+```
+
+
+Needle deciduous
+
+
+```{R}
+s <- 0
+for(i in c(1:14)){
+  ndbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_nd_20220824.csv'))
+  
+  s <- s+sum(ndbiomedf$sum)
+}
+
+```
+```{R}
+
+ndsum <- s
+
+```
+
+
+```{R}
+stropical <- 0
+
+for(i in c(1,3,14)){
+  ndbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_nd_20220824.csv'))
+  stropical <- stropical + sum(ndbiomedf$sum)
+}
+
+nd_tropical <- stropical/s
+```
+
+```{R}
+stemperate <- 0
+
+for(i in c(4,5)){
+  ndbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_nd_20220824.csv'))
+  stemperate <- stemperate + sum(ndbiomedf$sum)
+}
+
+nd_temperate <- stemperate/s
+```
+
+
+```{R}
+sboreal <- 0
+
+for(i in c(6,10,11)){
+  ndbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_nd_20220824.csv'))
+  sboreal <- sboreal + sum(ndbiomedf$sum)
+}
+
+nd_boreal <- sboreal/s
+```
+```{R}
+sdry <- 0
+
+for(i in c(2,7,8,12,13)){
+  ndbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_nd_20220824.csv'))
+  sdry <- sdry + sum(ndbiomedf$sum)
+}
+
+nd_arid <- sdry/s
+```
+
+
+
+```{R}
+sother <- 0
+
+ndbiomedf <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_9_in_nd_20220824.csv')
+sother <- sother + sum(ndbiomedf$sum)
+
+ndother <- sother/s
+
+```
+
+
+
+
+
+
+
+
+
+
+
+broadleaved deciduous
+
+
+```{R}
+s <- 0
+for(i in c(1:14)){
+  bdbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_bd_20220824.csv'))
+  
+  s <- s+sum(bdbiomedf$sum)
+}
+
+```
+```{R}
+
+bdsum <- s
+
+```
+
+
+```{R}
+stropical <- 0
+
+for(i in c(1,3,14)){
+  bdbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_bd_20220824.csv'))
+  stropical <- stropical + sum(bdbiomedf$sum)
+}
+
+bd_tropical <- stropical/s
+```
+
+```{R}
+stemperate <- 0
+
+for(i in c(4,5)){
+  bdbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_bd_20220824.csv'))
+  stemperate <- stemperate + sum(bdbiomedf$sum)
+}
+
+bd_temperate <- stemperate/s
+```
+
+
+```{R}
+sboreal <- 0
+
+for(i in c(6,10,11)){
+  bdbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_bd_20220824.csv'))
+  sboreal <- sboreal + sum(bdbiomedf$sum)
+}
+
+bd_boreal <- sboreal/s
+```
+```{R}
+sdry <- 0
+
+for(i in c(2,7,8,12,13)){
+  bdbiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_bd_20220824.csv'))
+  sdry <- sdry + sum(bdbiomedf$sum)
+}
+
+bd_arid <- sdry/s
+```
+
+
+```{R}
+sother <- 0
+
+bdbiomedf <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_9_in_bd_20220824.csv')
+sother <- sother + sum(bdbiomedf$sum)
+
+bdother <- sother/s
+
+```
+
+
+
+
+
+```{R}
+s <- 0
+for(i in c(1:14)){
+  bebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_be_20220824.csv'))
+  
+  s <- s+sum(bebiomedf$sum)
+}
+
+```
+```{R}
+
+besum <- s
+
+```
+
+
+```{R}
+stropical <- 0
+
+for(i in c(1,3,14)){
+  bebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_be_20220824.csv'))
+  stropical <- stropical + sum(bebiomedf$sum)
+}
+
+be_tropical <- stropical/s
+```
+
+```{R}
+stemperate <- 0
+
+for(i in c(4,5)){
+  bebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_be_20220824.csv'))
+  stemperate <- stemperate + sum(bebiomedf$sum)
+}
+
+be_temperate <- stemperate/s
+```
+
+
+```{R}
+sboreal <- 0
+
+for(i in c(6,10,11)){
+  bebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_be_20220824.csv'))
+  sboreal <- sboreal + sum(bebiomedf$sum)
+}
+
+be_boreal <- sboreal/s
+```
+
+
+```{R}
+
+tt <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',6,'_in_be_20220824.csv'))
+
+sum(tt$sum)
+
+tt <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',10,'_in_be_20220824.csv'))
+
+sum(tt$sum)
+
+
+tt <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',11,'_in_be_20220824.csv'))
+
+sum(tt$sum)
+
+```
+
+
+
+
+```{R}
+sdry <- 0
+
+for(i in c(2,7,8,12,13)){
+  bebiomedf <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_',i,'_in_be_20220824.csv'))
+  sdry <- sdry + sum(bebiomedf$sum)
+}
+
+be_arid <- sdry/s
+```
+
+```{R}
+sother <- 0
+
+bebiomedf <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\treecounting_biome_9_in_be_20220824.csv')
+sother <- sother + sum(bebiomedf$sum)
+
+beother <- sother/s
+
+```
+
+
+
+
+```{R}
+
+library(plotrix)
+library(viridisLite)
+```
+
+
+```{R}
+beplot <- c(besum, bdsum, nesum,ndsum)
+belabel <- c('Broadleaved evergreen', 'Broadleaved deciduous', 'needle-leaved evergreen', 'needle_leaved deciduous')
+
+bedf <- data.frame(
+  group = belabel,
+  value = beplot
+)
+
+bedf$value <- bedf$value/sum(bedf$value)
+bedf$group <- factor(bedf$group,levels = belabel)
+library(ggplot2)
+library(scales)
+#png(file = 'C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\be_pie.jpg')
+
+
+#pie(beplot, labels = belabel, explode = 0.1, edges = 7200, radius = 0.9)
+
+#dev.off()
+
+p1 <- ggplot(bedf, aes(x = "", y = value, fill = group))+
+  geom_bar(width = 1, stat = 'identity')+
+  coord_polar('y', start = 0)+
+  scale_fill_manual(values = viridis(4,begin = 0.2,option = 'viridis'))+
+  theme_minimal()+
+  theme(axis.title = element_blank(), panel.border = element_blank(), panel.grid = element_blank(), axis.ticks = element_blank(), plot.title = element_text(size = 14, face = 'bold'))+
+  theme(axis.text.x = element_blank())+
+  geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]), label = percent(value)), size = 5)
+
+
+
+```
+
+
+
+
+
+```{R}
+beplot <- c(be_tropical, be_temperate, be_boreal, be_arid,beother)
+belabel <- c('Tropical', 'Temperate', 'Boreal', 'Arid', 'Other')
+
+bedf <- data.frame(
+  group = belabel,
+  value = beplot
+)
+
+
+bedf$group <- factor(bedf$group, levels = belabel)
+
+library(ggplot2)
+library(scales)
+#png(file = 'C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\be_pie.jpg')
+
+
+
+
+#pie(beplot, labels = belabel, explode = 0.1, edges = 7200, radius = 0.9)
+
+#dev.off()
+
+p2<- ggplot(bedf, aes(x = "", y = value, fill = group))+
+  geom_bar(width = 1, stat = 'identity')+
+  coord_polar('y', start = 0)+
+  scale_fill_brewer(palette = 'YlGn', direction = -1)+
+  theme_minimal()+
+  theme(axis.title = element_blank(), panel.border = element_blank(), panel.grid = element_blank(), axis.ticks = element_blank(), plot.title = element_text(size = 14, face = 'bold'))+
+  theme(axis.text.x = element_blank())+
+  geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]), label = percent(value)), size = 5)
+
+
+
+```
+```{R}
+beplot <- c(bd_tropical, bd_temperate, bd_boreal, bd_arid, bdother)
+belabel <- c('Tropical', 'Temperate', 'Boreal', 'Arid', 'Other')
+
+bedf <- data.frame(
+  group = belabel,
+  value = beplot
+)
+
+
+bedf$group <- factor(bedf$group, levels = belabel)
+
+library(ggplot2)
+library(scales)
+#png(file = 'C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\be_pie.jpg')
+
+
+
+
+#pie(beplot, labels = belabel, explode = 0.1, edges = 7200, radius = 0.9)
+
+#dev.off()
+
+p3 <- ggplot(bedf, aes(x = "", y = value, fill = group))+
+  geom_bar(width = 1, stat = 'identity')+
+  coord_polar('y', start = 0)+
+  scale_fill_brewer(palette = 'YlGn', direction = -1)+
+  theme_minimal()+
+  theme(axis.title = element_blank(), panel.border = element_blank(), panel.grid = element_blank(), axis.ticks = element_blank(), plot.title = element_text(size = 14, face = 'bold'))+
+  theme(axis.text.x = element_blank())+
+  geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]), label = percent(value)), size = 5)
+
+
+
+```
+
+
+```{R}
+beplot <- c(ne_tropical, ne_temperate, ne_boreal, ne_arid, neother)
+belabel <- c('Tropical', 'Temperate', 'Boreal', 'Arid', 'Other')
+
+bedf <- data.frame(
+  group = belabel,
+  value = beplot
+)
+
+
+bedf$group <- factor(bedf$group, levels = belabel)
+
+library(ggplot2)
+library(scales)
+#png(file = 'C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\be_pie.jpg')
+
+
+
+
+#pie(beplot, labels = belabel, explode = 0.1, edges = 7200, radius = 0.9)
+
+#dev.off()
+
+p4 <- ggplot(bedf, aes(x = "", y = value, fill = group))+
+  geom_bar(width = 1, stat = 'identity')+
+  coord_polar('y', start = 0)+
+  scale_fill_brewer(palette = 'YlGn', direction = -1)+
+  theme_minimal()+
+  theme(axis.title = element_blank(), panel.border = element_blank(), panel.grid = element_blank(), axis.ticks = element_blank(), plot.title = element_text(size = 14, face = 'bold'))+
+  theme(axis.text.x = element_blank())+
+  geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]), label = percent(value)), size = 5)
+
+
+
+```
+
+
+
+```{R}
+beplot <- c(nd_tropical, nd_temperate, nd_boreal, nd_arid, ndother)
+belabel <- c('Tropical', 'Temperate', 'Boreal', 'Arid', 'Other')
+
+bedf <- data.frame(
+  group = belabel,
+  value = beplot
+)
+
+
+bedf$group <- factor(bedf$group, levels = belabel)
+
+library(ggplot2)
+library(scales)
+#png(file = 'C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\be_pie.jpg')
+
+
+
+
+#pie(beplot, labels = belabel, explode = 0.1, edges = 7200, radius = 0.9)
+
+#dev.off()
+
+p5 <- ggplot(bedf, aes(x = "", y = value, fill = group))+
+  geom_bar(width = 1, stat = 'identity')+
+  coord_polar('y', start = 0)+
+  scale_fill_brewer(palette = 'YlGn', direction = -1)+
+  theme_minimal()+
+  theme(axis.title = element_blank(), panel.border = element_blank(), panel.grid = element_blank(), axis.ticks = element_blank(), plot.title = element_text(size = 14, face = 'bold'))+
+  theme(axis.text.x = element_blank())+
+  geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]), label = percent(value)), size = 5)
+
+
+
+```
+
+
+
+```{R}
+bootstrap.counting.fc <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\tree_counting\\bootstrap_mean_minmax_typesummary.csv')
+
+head(bootstrap.counting.fc)
+
+
+```
+
+```{R}
+bootstrap.counting.fc$leaftype <- factor(bootstrap.counting.fc$leaftype, levels = c('BE', 'BD', 'NE', 'ND'))
+
+
+ggplot(bootstrap.counting.fc)+
+  stat_summary(aes(x = leaftype, y = occ_prop, fill = occ_prop, color = occ_prop), geom = 'bar')+
+  geom_errorbar(aes(x = leaftype,ymin = minprop, ymax = maxprop),width = 0.6)+
+  scale_fill_gradientn(colours = viridis(4,begin = 0.2,option = 'viridis'))+
+  scale_color_gradientn(colours = viridis(4,begin = 0.2,option = 'viridis'))
+
+
+
+```
+
+
+
