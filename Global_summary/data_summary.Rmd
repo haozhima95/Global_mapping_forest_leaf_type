@@ -5,6 +5,7 @@ date: "12/13/2021"
 output: html_document
 ---
 
+## This script creates a map showing the global distribution of our sample points. 
 
 add a world map
 ```{R}
@@ -13,11 +14,7 @@ library(ggplot2)
 library(ggthemes)
 worlddata <- map_data('world')
 ```
-
-
 Add a dataset
-
-
 
 ```{R}
 
@@ -27,32 +24,20 @@ names(df)
 
 ```
 
-
 ```{R}
-#modelprediction<-read.csv('Your directory\\forest_250km.csv') # This dataset, together with the grass and shrub dataset, are from LOO-CV results.
-#head(modelprediction)
-#summary(modelprediction$regressionmatrix.rmf)
+
 paletteForUse <- c('#FF0000',"#FDE725", "#AADC32", "#5DC863", "#27AD81", "#21908C", "#2C728E", "#3B528B", "#472D7B", "#440154")
 colors <-  colorRampPalette(paletteForUse)(256)
 df$dens <- col2rgb(densCols(df$longitude, df$latitude))[1,]+1L
 df$colors = colors[df$dens]
 range(df$dens)
 quantile(df$dens,0.9)
-#df[df$dens >136, 'colors'] = '#BEBEBE' # Here you have to check the 90% quantile of the column 'dens'
-
-
-
 
 
 ```
 
 
-
-
-
-
-
-Point distribuion
+### Point distribuion
 
 
 ```{R}
