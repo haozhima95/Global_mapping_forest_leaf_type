@@ -5,10 +5,10 @@ date: "3/14/2022"
 output: html_document
 ---
 
-This script is used for counting the number of trees by biome in different forest types.
+## This script is used for counting the number of trees by biome in different forest types.
 
 
-Needle evergreen
+### Needle evergreen
 
 
 ```{R}
