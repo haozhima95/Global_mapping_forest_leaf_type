@@ -6,6 +6,11 @@ output: html_document
 ---
 
 
+## This script enables to construct 2D-histograms between degree of evergreen and degree of broadleaved. 
+
+
+
+Load the dataset.
 ```{R}
 
 df <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\gfbi_recent_plot_info_4class_with_fold_with_env_20221010.csv')
@@ -13,7 +18,7 @@ df <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\GFBI_data\\gfbi_recent_plot_info_
 names(df)
 
 ```
-
+Get the columns.
 ```{R}
 dfplotlevel <- df[,c('LAT','LON','area','be_prop_dbh','bd_prop_dbh','ne_prop_dbh','nd_prop_dbh','fold','index')]
 dfplotlevel$evergreen <- dfplotlevel$be_prop_dbh+dfplotlevel$ne_prop_dbh
@@ -21,6 +26,8 @@ dfplotlevel$evergreen <- dfplotlevel$be_prop_dbh+dfplotlevel$ne_prop_dbh
 dfplotlevel$broad <- dfplotlevel$be_prop_dbh + dfplotlevel$bd_prop_dbh
 ```
 
+
+#### Not neccessary to run this chunk. 
 ```{R}
 library(maps)
 library(sp)
@@ -36,7 +43,7 @@ writeOGR(plotdfshp, 'C:\\Users\\haozh\\Desktop\\LL\\GFBI_data',layer = 'gfbi_uni
 
 ```
 
-
+### Plot!
 
 ```{R}
 
