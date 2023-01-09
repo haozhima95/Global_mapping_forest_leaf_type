@@ -6,7 +6,7 @@
 
 - The folder named "[Global summary](https://github.com/haozhima95/Global_mapping_forest_leaf_type/tree/master/Global_summary)" saves .Rmd files for constructing _Fig.1_ in the manuscript. 
 
-- The folder named "[Mapping_code](https://github.com/haozhima95/Global_mapping_forest_leaf_type/tree/master/mapping_code)" contains files and functions for mapping global forest leaf types and future leaf types in [Google Earth Engine](https://earthengine.google.com/). 
+- The folder named "[Mapping_code](https://github.com/haozhima95/Global_mapping_forest_leaf_type/tree/master/mapping_code)" contains files and functions for mapping global forest leaf types and future leaf types in [Google Earth Engine](https://earthengine.google.com/). This enables to construct _Fig.2_ and _Fig.5_ in the manuscript. 
 
 - The folder named "[Var_imp_analysis](https://github.com/haozhima95/Global_mapping_forest_leaf_type/tree/master/Var_imp_analysis)" includes .Rmd scripts to construct _Fig.3_ in the manuscript. 
 
