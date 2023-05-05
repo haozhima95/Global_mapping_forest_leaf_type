@@ -90,7 +90,6 @@ var compnames = [
   'HumanFootprint',
   'Human_Development_Percentage',
   // 'Human_Disturbance',
-  'Lai',
   'LandCoverClass_Cultivated_and_Managed_Vegetation',
   'LandCoverClass_Urban_Builtup',
   'Npp',
