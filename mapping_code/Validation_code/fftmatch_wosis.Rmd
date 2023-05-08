@@ -18,7 +18,7 @@ library(ggplot2)
 library(geosphere)
 ```
 
-First we extracted the silt dataset from QGIS. 
+First we extracted the gfbi dataset with silt content information with distance. 
 
 ```{R}
 
@@ -49,7 +49,7 @@ fft <- read.csv('~/Desktop/fullgfbi_standardized_20230330_66domi.csv')
 
 ```
 
-
+Join the silt content information to the full GFBi dataset. 
 
 ```{R}
 fft <- fft %>%
@@ -62,6 +62,7 @@ names(fft)
 
 ```
 
+We only need the GFBI plots that have at least one WOSIS data point nearby within 1 km distance.
 ```{R}
 
 fftmatch <- fft %>%
@@ -71,6 +72,7 @@ nrow(fftmatch)
 
 
 ```
+Initialize the similar function mentioned in "Silt_match.Rmd" for the rest soil features. 
 
 ```{R}
 locator <- function(df, soildf) {
@@ -91,7 +93,7 @@ minsoil <- function(df, soildf){
 
 ```
 
-
+Load the clay data.
 ```{R}
 
 clay <- read.csv('~/Desktop/clay_demo.csv')
@@ -106,6 +108,8 @@ names(clay) <- c('Latitude', 'Longitude', 'clay_value_avg')
 
 
 ```
+
+Soil pH. 
 ```{R}
 
 soilph <- read.csv('~/Desktop/soilph.csv')
@@ -136,7 +140,7 @@ names(soilph) <- c('Longitude', 'Latitude', 'phaq_value_avg')
 
 ```
 
-
+Soil sand content.
 ```{R}
 
 sand <- read.csv('~/Desktop/sand_content.csv')
@@ -156,7 +160,7 @@ names(sand) <- c('Longitude', 'Latitude', 'sand_value_avg')
 
 ```
 
-
+Total nitrogen content
 ```{R}
 
 nitrogen <- read.csv('~/Desktop/nitrogen.csv')
@@ -176,7 +180,7 @@ names(nitrogen) <- c('Longitude', 'Latitude', 'nitrogen_value_avg')
 
 ```
 
-
+Soil coarse fragments.
 ```{R}
 
 coarse_frag <- read.csv('~/Desktop/coarse_frag.csv')
@@ -201,7 +205,7 @@ names(coarse_frag) <- c('Longitude', 'Latitude', 'coarsefrag_value_avg')
 
 
 
-
+Run the functions with all the rest soil features. 
 ```{R}
 
 demosoil <- fftmatch %>%
@@ -239,6 +243,8 @@ fftmatch <- fftmatch %>%
 names(fftmatch)
 
 ```
+
+Filter the dataset by distance. We only remain the plots with all the soil features occurr within one kilometer.
 
 ```{R}
 fftmatch <- fftmatch %>%
