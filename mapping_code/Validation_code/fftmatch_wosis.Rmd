@@ -1,0 +1,263 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-18"
+---
+
+```{R}
+
+library(dplyr)
+
+library(readr)
+
+library(ggplot2)
+
+library(geosphere)
+```
+
+
+```{R}
+
+soilmatch1 <- read.csv('~/Desktop/soil_silt_match_distance_1.csv')
+
+soilmatch2 <- read.csv('~/Desktop/soil_silt_match_distance_2.csv')
+
+soilmatch3 <- read.csv('~/Desktop/soil_silt_match_distance_3.csv')
+
+soilmatch4 <- read.csv('~/Desktop/soil_silt_match_distance_4.csv')
+
+```
+
+
+```{R}
+allsoilmatch <- rbind(soilmatch1,soilmatch2,soilmatch3,soilmatch4)
+
+nrow(allsoilmatch)
+```
+
+```{R}
+
+fft <- read.csv('~/Desktop/fullgfbi_standardized_20230330_66domi.csv')
+
+
+
+```
+
+
+
+```{R}
+fft <- fft %>%
+  left_join(allsoilmatch, by = 'plot_id')
+
+
+names(fft)
+
+
+
+```
+
+```{R}
+
+fftmatch <- fft %>%
+  filter(siltmin<=1000)
+
+nrow(fftmatch)
+
+
+```
+
+```{R}
+locator <- function(df, soildf) {
+  library(geosphere)
+  
+  ss <- distm(df[,c('longitude', 'latitude')], soildf[,c('Longitude', 'Latitude')], fun = distHaversine)
+  
+  return(soildf[which.min(ss),3])
+}
+
+
+minsoil <- function(df, soildf){
+  ss <- distm(df[,c('longitude', 'latitude')], soildf[,c('Longitude', 'Latitude')], fun = distHaversine)
+  return(min(ss))
+  
+}
+
+
+```
+
+
+```{R}
+
+clay <- read.csv('~/Desktop/clay_demo.csv')
+
+names(clay)
+
+clay <- clay %>%
+  select(c('X','Y','clay_value_avg'))
+
+names(clay) <- c('Latitude', 'Longitude', 'clay_value_avg')
+
+
+
+```
+```{R}
+
+soilph <- read.csv('~/Desktop/soilph.csv')
+
+names(soilph)
+
+
+```
+
+```{R}
+library(maps)
+
+worlddata <- map_data('world')
+
+ggplot() + 
+  geom_map(data = worlddata, map = worlddata, aes(x = long, y = lat, group = group, map_id = region), fill = '#bcbcbc', color = '#bcbcbc', size = 0.5)+
+  geom_point(data = soilph, aes(x = X, y = Y))
+
+
+
+```
+
+```{R}
+soilph <- soilph %>%
+  select(c('X', 'Y', 'phaq_value_avg'))
+
+names(soilph) <- c('Longitude', 'Latitude', 'phaq_value_avg')
+
+```
+
+
+```{R}
+
+sand <- read.csv('~/Desktop/sand_content.csv')
+
+names(sand)
+
+
+```
+
+
+```{R}
+
+sand <- sand %>%
+  select(c('X', 'Y', 'sand_value_avg'))
+
+names(sand) <- c('Longitude', 'Latitude', 'sand_value_avg')
+
+```
+
+
+```{R}
+
+nitrogen <- read.csv('~/Desktop/nitrogen.csv')
+
+names(nitrogen)
+
+
+```
+
+
+```{R}
+
+nitrogen <- nitrogen %>%
+  select(c('X', 'Y', 'nitkjd_value_avg'))
+
+names(nitrogen) <- c('Longitude', 'Latitude', 'nitrogen_value_avg')
+
+```
+
+
+```{R}
+
+coarse_frag <- read.csv('~/Desktop/coarse_frag.csv')
+
+names(coarse_frag)
+
+
+```
+
+
+```{R}
+
+coarse_frag <- coarse_frag %>%
+  select(c('X', 'Y', 'cfvo_value_avg'))
+
+names(coarse_frag) <- c('Longitude', 'Latitude', 'coarsefrag_value_avg')
+
+```
+
+
+
+
+
+
+
+```{R}
+
+demosoil <- fftmatch %>%
+  group_by(plot_id) %>%
+  do(data.frame(claymin = minsoil(.,clay),
+                clayvalue = locator(.,clay),
+                soilphmin = minsoil(.,soilph),
+                soilphvalue = locator(., soilph),
+                sandmin = minsoil(.,sand),
+                sandvalue = locator(.,sand),
+                nitrogenmin = minsoil(.,nitrogen),
+                nitrogenvalue = locator(.,nitrogen),
+                coarsefragmin = minsoil(.,coarse_frag),
+                coarsefragvalue = locator(.,coarse_frag))) %>%
+  ungroup()
+
+
+```
+
+
+```{R}
+
+summary(demosoil)
+
+
+
+```
+
+```{R}
+
+fftmatch <- fftmatch %>%
+  left_join(demosoil, by = 'plot_id')
+
+
+names(fftmatch)
+
+```
+
+```{R}
+fftmatch <- fftmatch %>%
+  filter(claymin <= 1000 & soilphmin <= 1000 & sandmin <= 1000 & nitrogenmin <= 1000 & coarsefragmin <= 1000)
+
+nrow(fftmatch)
+
+```
+
+
+```{R}
+
+worlddata <- map_data('world')
+
+ggplot() + 
+  geom_map(data = worlddata, map = worlddata, aes(x = long, y = lat, group = group, map_id = region), fill = '#bcbcbc', color = '#bcbcbc', size = 0.5)+
+  geom_point(data = fftmatch, aes(x = longitude, y = latitude))
+
+
+```
+```{R}
+write_csv(fftmatch, '~/Desktop/fftmatch_for_add_analysis.csv')
+
+
+```
+
+
+
