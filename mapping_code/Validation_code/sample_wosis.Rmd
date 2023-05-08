@@ -4,6 +4,11 @@ output: html_document
 date: "2023-05-05"
 ---
 
+
+### This script is used for sampling the GFBi dataset with WOSIS data to predict leaf types in google earth engine. 
+
+### Load the GFBi dataset with leaf type information. Note that this dataset is used for another project, but contains all information needed for this leaf type project.
+
 ```{R}
 
 gfbi_all <- read.csv('~/Desktop/bpr/gfbi_withhabitform.csv')
@@ -13,7 +18,7 @@ head(gfbi_all)
 ```
 
 
-
+Load the wosis matching data
 ```{R}
 
 wosis <- read.csv('~/Desktop/fftmatch_for_add_analysis.csv')
@@ -22,10 +27,14 @@ head(wosis)
 
 ```
 
+
+Filter the wosis matching data by the number of individuals in each plot. A plot should at leaset contain 10 individuals.
 ```{R}
 
 wosis <- wosis[wosis$n_indi>=10,]
 ```
+
+
 
 
 ```{R}
@@ -44,6 +53,8 @@ library(dplyr)
 
 ```
 
+Set folds for 10-folds cross validation.
+
 ```{R}
 
 set.seed(0)
@@ -55,7 +66,7 @@ wosis$fold <- (wosis$random%%10)+1
 ```
 
 
-
+Only select the plots that contains wosis information
 ```{R}
 
 gfbi_sub <- gfbi_all %>%
@@ -68,6 +79,10 @@ head(gfbi_sub)
 
 
 ```
+
+Set the classes.
+
+
 ```{R}
 
 gfbi_sub <- gfbi_sub %>%
@@ -106,7 +121,7 @@ gfbi_env$class <- as.integer(gfbi_env$class)
 
 
 
-
+Output the dataset that will be used for the testing dataset. 
 ```{R}
 
 write_csv(wosis, '~/Desktop/wosis_with_fold.csv')
@@ -114,7 +129,7 @@ write_csv(wosis, '~/Desktop/wosis_with_fold.csv')
 
 ```
 
-
+Sample the training dataset. 
 
 ```{R}
 set.seed(0)
