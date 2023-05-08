@@ -1,0 +1,198 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-05-05"
+---
+
+```{R}
+
+
+sgpred <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\wosis\\prediction_fold_1_soil_grids.csv')
+
+for(i in 2:10){
+  addon <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\wosis\\prediction_fold_',i,'_soil_grids.csv'))
+  
+  sgpred <- rbind(sgpred,addon)
+  
+}
+
+head(sgpred)
+
+
+
+
+
+```
+
+
+
+
+```{R}
+
+
+wopred <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\wosis\\prediction_fold_1_wosis.csv')
+
+for(i in 2:10){
+  addon <- read.csv(paste0('C:\\Users\\haozh\\Desktop\\LL\\wosis\\prediction_fold_',i,'_wosis.csv'))
+  
+  wopred <- rbind(wopred,addon)
+  
+}
+
+head(wopred)
+
+
+
+
+
+```
+
+```{R}
+
+library(readr)
+
+library(ggplot2)
+
+library(dplyr)
+
+
+```
+
+
+
+```{R}
+
+sgpred <- sgpred %>%
+  select(c('plot_id', 'be', 'bd', 'ne', 'nd', 'be_pred', 'bd_pred', 'ne_pred', 'nd_pred'))
+
+
+names(sgpred) <- c('plot_id', 'be', 'bd', 'ne', 'nd', 'be_pred_sg', 'bd_pred_sg', 'ne_pred_sg', 'nd_pred_sg')
+
+```
+
+
+
+```{R}
+
+wopred <- wopred %>%
+  select(c('plot_id','be_pred', 'bd_pred', 'ne_pred', 'nd_pred'))
+
+names(wopred) <- c('plot_id','be_pred_wo', 'bd_pred_wo', 'ne_pred_wo', 'nd_pred_wo')
+
+```
+
+
+
+```{R}
+
+allpred <- sgpred %>%
+  left_join(wopred, by = 'plot_id')
+
+head(allpred)
+
+```
+
+```{R}
+
+allpred %>%
+  ggplot(., aes(x = be_pred_sg,y = be_pred_wo)) +
+  geom_point()
+
+allpred %>%
+  ggplot(., aes(x = bd_pred_sg,y = bd_pred_wo)) +
+  geom_point()
+
+allpred %>%
+  ggplot(., aes(x = ne_pred_sg,y = ne_pred_wo)) +
+  geom_point()
+
+allpred %>%
+  ggplot(., aes(x = nd_pred_sg,y = nd_pred_wo)) +
+  geom_point()
+
+
+
+
+```
+
+
+```{R}
+allpred <- allpred %>%
+  mutate(be_mean = mean(be),
+         bd_mean = mean(bd),
+         ne_mean = mean(ne),
+         nd_mean = mean(nd))
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+```{R}
+bc_mean <- function(ds){
+  return(sqrt(ds$be_pred_sg*ds$be_mean)+sqrt(ds$bd_pred_sg*ds$bd_mean)+sqrt(ds$ne_pred_sg*ds$ne_mean)+sqrt(ds$nd_pred_sg*ds$nd_mean))
+}
+
+bc_model <- function(ds){
+  return(sqrt(ds$be_pred_sg*ds$be_pred_wo)+sqrt(ds$bd_pred_sg*ds$bd_pred_wo)+sqrt(ds$ne_pred_sg*ds$ne_pred_wo)+sqrt(ds$nd_pred_sg*ds$nd_pred_wo))
+}
+
+coef_rel <- function(bcmodel, bcmean){
+  return(sum(bcmodel-bcmean)/sum(1-bcmean))
+}
+
+
+coef_det <- function(xtrue, xpred){
+    return(1-sum((xtrue-xpred)^2)/sum((xtrue-mean(xtrue))^2))
+}
+
+
+
+```
+
+
+
+```{R}
+allpred$bcmean <- bc_mean(allpred)
+
+allpred$bcmodel <- bc_model(allpred)
+
+
+coef_rel(allpred$bcmodel, allpred$bcmean)
+
+
+```
+```{R}
+
+coef_det(allpred$be_pred_sg,allpred$be_pred_wo)
+coef_det(allpred$bd_pred_sg,allpred$bd_pred_wo)
+
+
+coef_det(allpred$ne_pred_sg,allpred$ne_pred_wo)
+coef_det(allpred$nd_pred_sg,allpred$nd_pred_wo)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
