@@ -1,0 +1,200 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-14"
+---
+
+
+```{R}
+
+
+silt <- read.csv('~/Desktop/silt_demo.csv')
+
+
+nrow(silt)
+
+head(silt)
+
+
+```
+
+```{R}
+library(ggplot2)
+
+library(dplyr)
+
+
+library(zoo)
+
+library(maps)
+
+
+```
+
+
+```{R}
+worlddata <- map_data('world')
+
+ggplot() + 
+  geom_map(data = worlddata, map = worlddata, aes(x = long, y = lat, group = group, map_id = region), fill = '#bcbcbc', color = '#bcbcbc', size = 0.5)+
+  geom_point(data = silt, aes(x = Y, y = X))
+
+
+```
+
+
+
+```{R}
+
+silt <- silt %>%
+  dplyr::select(c(Y, X, silt_value_avg))
+
+
+names(silt) <- c('Longitude', 'Latitude', 'silt_value_avg')
+
+
+
+
+
+
+```
+
+
+```{R}
+
+clay <- read.csv('~/Desktop/clay_demo.csv')
+
+
+
+
+```
+
+
+```{R}
+
+
+worlddata <- map_data('world')
+
+ggplot() + 
+  geom_map(data = worlddata, map = worlddata, aes(x = long, y = lat, group = group, map_id = region), fill = '#bcbcbc', color = '#bcbcbc', size = 0.5)+
+  geom_point(data = clay, aes(x = Y, y = X))
+
+
+```
+
+
+```{R}
+fft <- read.csv('~/Desktop/fullgfbi_standardized_20230330_66domi.csv')
+
+head(fft)
+
+names(fft)
+
+```
+```{R}
+
+summary(fft$bd)
+
+fft$rowinde <- 1:nrow(fft)
+
+```
+
+
+
+```{R}
+library(dplyr)
+
+library(geosphere)
+
+
+
+```
+
+
+
+```{R}
+
+subfft <- fft %>%
+  sample_n(., 1)
+
+subfft[,c('longitude', 'latitude')]
+
+```
+
+
+```{R}
+
+ss <- distm(subfft[,c('longitude', 'latitude')], silt[,c('Longitude', 'Latitude')], fun = distHaversine)
+
+
+
+
+which.min(ss)
+
+ss[which.min(ss)]
+
+```
+
+
+```{R}
+
+locator <- function(df, soildf) {
+  library(geosphere)
+  
+  ss <- distm(df[,c('longitude', 'latitude')], soildf[,c('Longitude', 'Latitude')], fun = distHaversine)
+  
+  return(silt[which.min(ss),'silt_value_avg'])
+}
+
+
+minsoil <- function(df, soildf){
+  ss <- distm(df[,c('longitude', 'latitude')], soildf[,c('Longitude', 'Latitude')], fun = distHaversine)
+  return(min(ss))
+  
+}
+
+```
+
+
+```{R}
+
+fftsample <- fft[1000001:nrow(fft),]
+
+
+
+demosoil <- fftsample %>%
+  group_by(plot_id) %>%
+  do(data.frame(siltmin = minsoil(.,silt),
+                siltvalue = locator(.,silt))) %>%
+  ungroup()
+
+
+
+```
+
+
+```{R}
+
+summary(demosoil$siltmin)
+
+
+```
+
+
+```{R}
+
+nrow(demosoil[demosoil$siltmin<=500,])
+
+
+```
+
+```{R}
+
+library(readr)
+
+write_csv(demosoil, '~/Desktop/soil_silt_match_distance_4.csv')
+
+
+```
+
+
