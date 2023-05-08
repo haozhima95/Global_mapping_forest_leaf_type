@@ -4,6 +4,9 @@ output: html_document
 date: "2023-04-18"
 ---
 
+### This script is used for matching WOWSIS data with GFBi global dataset to replace the Soil Grids data. 
+
+Load packages that could possibly be used.
 ```{R}
 
 library(dplyr)
@@ -15,6 +18,7 @@ library(ggplot2)
 library(geosphere)
 ```
 
+First we extracted the silt dataset from QGIS. 
 
 ```{R}
 
@@ -27,6 +31,8 @@ soilmatch3 <- read.csv('~/Desktop/soil_silt_match_distance_3.csv')
 soilmatch4 <- read.csv('~/Desktop/soil_silt_match_distance_4.csv')
 
 ```
+
+
 
 
 ```{R}
