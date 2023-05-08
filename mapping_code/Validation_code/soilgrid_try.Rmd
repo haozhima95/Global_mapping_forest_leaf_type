@@ -5,6 +5,11 @@ date: "2023-04-14"
 ---
 
 
+
+### This script is used for checking distances between WOSIS data and GFBI data. 
+
+
+Load the silt dataset extracted from QGIS. 
 ```{R}
 
 
@@ -17,6 +22,8 @@ head(silt)
 
 
 ```
+
+Load the packages that will be used. 
 
 ```{R}
 library(ggplot2)
@@ -31,6 +38,8 @@ library(maps)
 
 ```
 
+Check the global distributions of silt data. 
+
 
 ```{R}
 worlddata <- map_data('world')
@@ -42,7 +51,7 @@ ggplot() +
 
 ```
 
-
+We don't need to many columns from silt dataset. We only need longitude, latitude and point-level measurements.
 
 ```{R}
 
@@ -54,11 +63,8 @@ names(silt) <- c('Longitude', 'Latitude', 'silt_value_avg')
 
 
 
-
-
-
 ```
-
+Same processing applied to clay content dataset. 
 
 ```{R}
 
@@ -82,6 +88,7 @@ ggplot() +
 
 ```
 
+Load the full version of GFBi dataset. The file name is from another project using GFBi dataset, but also contain the information that needed for this leaf type project. 
 
 ```{R}
 fft <- read.csv('~/Desktop/fullgfbi_standardized_20230330_66domi.csv')
@@ -104,13 +111,13 @@ fft$rowinde <- 1:nrow(fft)
 ```{R}
 library(dplyr)
 
-library(geosphere)
+library(geosphere) # where the function "distm" is from.
 
 
 
 ```
 
-
+Below is a trial to illustrate how the "distm" function works. To do so, we need a subset of GFBi.
 
 ```{R}
 
@@ -121,7 +128,7 @@ subfft[,c('longitude', 'latitude')]
 
 ```
 
-
+Run the "distm" function from the package "geosphere".
 ```{R}
 
 ss <- distm(subfft[,c('longitude', 'latitude')], silt[,c('Longitude', 'Latitude')], fun = distHaversine)
@@ -135,9 +142,10 @@ ss[which.min(ss)]
 
 ```
 
+Now we initialize a function that can systematically process the GFBi dataset by calculating the neariest distance to a WOSIS point and get the soil feature value (here the value is silt content). 
 
 ```{R}
-
+# function for getting the soil feature.
 locator <- function(df, soildf) {
   library(geosphere)
   
@@ -147,6 +155,7 @@ locator <- function(df, soildf) {
 }
 
 
+# Function for getting the nearest distance to WOSIS point.
 minsoil <- function(df, soildf){
   ss <- distm(df[,c('longitude', 'latitude')], soildf[,c('Longitude', 'Latitude')], fun = distHaversine)
   return(min(ss))
@@ -156,6 +165,8 @@ minsoil <- function(df, soildf){
 ```
 
 
+We here split gfbi dataset into 4 sub-datasets to release the pressure of computer storage. Below shows the last piece. 
+
 ```{R}
 
 fftsample <- fft[1000001:nrow(fft),]
@@ -163,7 +174,7 @@ fftsample <- fft[1000001:nrow(fft),]
 
 
 demosoil <- fftsample %>%
-  group_by(plot_id) %>%
+  group_by(plot_id) %>% # "plot_id" is the key to locate each unique plot in GFBi. 
   do(data.frame(siltmin = minsoil(.,silt),
                 siltvalue = locator(.,silt))) %>%
   ungroup()
@@ -180,13 +191,15 @@ summary(demosoil$siltmin)
 
 ```
 
-
+See how many points remain if we set a maximum distance threshold. 
 ```{R}
 
-nrow(demosoil[demosoil$siltmin<=500,])
+nrow(demosoil[demosoil$siltmin<=1000,])
 
 
 ```
+
+Output
 
 ```{R}
 
