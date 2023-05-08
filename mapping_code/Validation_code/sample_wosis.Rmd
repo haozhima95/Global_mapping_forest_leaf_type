@@ -1,0 +1,137 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-05-05"
+---
+
+```{R}
+
+gfbi_all <- read.csv('~/Desktop/bpr/gfbi_withhabitform.csv')
+
+head(gfbi_all)
+
+```
+
+
+
+```{R}
+
+wosis <- read.csv('~/Desktop/fftmatch_for_add_analysis.csv')
+
+head(wosis)
+
+```
+
+```{R}
+
+wosis <- wosis[wosis$n_indi>=10,]
+```
+
+
+```{R}
+plotlist <- unique(wosis$plot_id)
+
+```
+
+
+
+```{R}
+library(readr)
+
+library(ggplot2)
+
+library(dplyr)
+
+```
+
+```{R}
+
+set.seed(0)
+
+wosis$random <- sample(1:nrow(wosis))
+
+wosis$fold <- (wosis$random%%10)+1
+
+```
+
+
+
+```{R}
+
+gfbi_sub <- gfbi_all %>%
+  filter(plot_id %in% plotlist)
+
+gfbi_sub <- gfbi_sub[complete.cases(gfbi_sub$leaftypespecies),]
+gfbi_sub <- gfbi_sub[complete.cases(gfbi_sub$leafhabitspecies),]
+
+head(gfbi_sub)
+
+
+```
+```{R}
+
+gfbi_sub <- gfbi_sub %>%
+  mutate(class = case_when(leafhabitspecies>=0.5 & leaftypespecies == 'A' ~ 0,
+                           leafhabitspecies>=0.5 & leaftypespecies == 'G' ~ 2,
+                           leafhabitspecies<0.5 & leaftypespecies == 'A' ~ 1,
+                           leafhabitspecies<0.5 & leaftypespecies == 'G' ~ 3))
+
+
+```
+
+```{R}
+head(gfbi_sub)
+
+```
+
+
+```{R}
+
+gfbi_env <- gfbi_sub %>%
+  left_join(wosis,by = 'plot_id')
+
+
+names(gfbi_env)
+
+
+head(gfbi_env)
+
+
+```
+
+```{R}
+
+gfbi_env$class <- as.integer(gfbi_env$class)
+```
+
+
+
+
+```{R}
+
+write_csv(wosis, '~/Desktop/wosis_with_fold.csv')
+
+
+```
+
+
+
+```{R}
+set.seed(0)
+
+for(i in 1:100){
+  set.seed(i)
+  sampledf <- gfbi_env %>%
+    group_by(plot_id) %>%
+    sample_n(10,weight = dbh*dbh, replace = T)
+  
+  write_csv(sampledf, paste0('~/Desktop/ll/random_sampled_with_wosis_',i,'with_fold_with_env_20230505.csv'))
+  
+}
+
+```
+
+
+
+
+
