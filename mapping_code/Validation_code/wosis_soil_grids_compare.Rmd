@@ -4,9 +4,14 @@ output: html_document
 date: "2023-05-05"
 ---
 
+### This script is used for comparing the predictive results using Soil Grids and WOSIS data for modelling. 
+
+
+Load the datasets
+
+
+#### Soil Grids
 ```{R}
-
-
 sgpred <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\wosis\\prediction_fold_1_soil_grids.csv')
 
 for(i in 2:10){
@@ -26,7 +31,7 @@ head(sgpred)
 
 
 
-
+#### WOSIS
 ```{R}
 
 
@@ -125,15 +130,13 @@ allpred <- allpred %>%
 
 
 
-
-
 ```
 
 
 
 
 
-
+Initialize the functions for calculating different R squares.
 
 
 
@@ -182,12 +185,6 @@ coef_det(allpred$nd_pred_sg,allpred$nd_pred_wo)
 
 
 ```
-
-
-
-
-
-
 
 
 
