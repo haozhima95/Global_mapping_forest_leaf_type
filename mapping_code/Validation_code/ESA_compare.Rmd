@@ -5,6 +5,8 @@ date: "2023-04-19"
 ---
 
 
+### This script is used for comparing the performances of RF leaf type models with ESA CCI LC remote sensing results. 
+
 ```{R}
 library(ggplot2)
 
@@ -15,7 +17,7 @@ library(dplyr)
 
 
 ```
-
+Load the dataset.
 
 ```{R}
 
@@ -42,11 +44,6 @@ fftcompare <- fftcompare %>%
 
 
 
-
-
-
-
-
 ```{R}
 bc_mean <- function(ds){
   return(sqrt(ds$be_esa_mean*ds$be_mean)+sqrt(ds$bd_esa_mean*ds$bd_mean)+sqrt(ds$ne_esa_mean*ds$ne_mean)+sqrt(ds$nd_esa_mean*ds$nd_mean))
@@ -67,9 +64,6 @@ coef_det <- function(xtrue, xpred){
 
 
 ```
-
-
-
 
 ```{R}
 
