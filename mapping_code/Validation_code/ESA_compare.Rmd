@@ -1,0 +1,103 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-04-19"
+---
+
+
+```{R}
+library(ggplot2)
+
+library(readr)
+
+library(dplyr)
+
+
+
+```
+
+
+```{R}
+
+
+fftcompare <- read.csv('C:\\Users\\haozh\\Desktop\\LL\\ESA_LC\\sampled_fft_esa_match_add_analysis.csv')
+
+names(fftcompare)
+
+
+```
+```{R}
+fftcompare <- fftcompare %>%
+  mutate(be_mean = mean(be_prop_dbh),
+         bd_mean = mean(bd_prop_dbh),
+         ne_mean = mean(ne_prop_dbh),
+         nd_mean = mean(nd_prop_dbh))
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+```{R}
+bc_mean <- function(ds){
+  return(sqrt(ds$be_esa_mean*ds$be_mean)+sqrt(ds$bd_esa_mean*ds$bd_mean)+sqrt(ds$ne_esa_mean*ds$ne_mean)+sqrt(ds$nd_esa_mean*ds$nd_mean))
+}
+
+bc_model <- function(ds){
+  return(sqrt(ds$be_pred_mean*ds$be_esa_mean)+sqrt(ds$bd_pred_mean*ds$bd_esa_mean)+sqrt(ds$ne_pred_mean*ds$ne_esa_mean)+sqrt(ds$nd_pred_mean*ds$nd_esa_mean))
+}
+
+coef_rel <- function(bcmodel, bcmean){
+  return(sum(bcmodel-bcmean)/sum(1-bcmean))
+}
+
+
+coef_det <- function(xtrue, xpred){
+    return(1-sum((xtrue-xpred)^2)/sum((xtrue-mean(xtrue))^2))
+}
+
+
+```
+
+
+
+
+```{R}
+
+fftcompare$bcmean <- bc_mean(fftcompare)
+
+fftcompare$bcmodel <- bc_model(fftcompare)
+
+
+coef_rel(fftcompare$bcmodel, fftcompare$bcmean)
+
+```
+
+
+
+```{R}
+coef_det(fftcompare$be_esa_mean,fftcompare$be_pred_mean)
+coef_det(fftcompare$bd_esa_mean,fftcompare$bd_pred_mean)
+
+coef_det(fftcompare$ne_esa_mean,fftcompare$ne_pred_mean)
+coef_det(fftcompare$nd_esa_mean,fftcompare$nd_pred_mean)
+
+
+```
+
+
+
+
+
+
+
+
