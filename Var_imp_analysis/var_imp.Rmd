@@ -312,10 +312,7 @@ varnames = unique(deimp$variable)
 varnames <- varnames[order(varnames,decreasing = T)]
 
 
-deimp$variable <- factor(deimp$variable, levels = c(#'CHELSA_Temperature_Seasonality',
-
-  
-  'CanopyHeight',
+deimp$variable <- factor(deimp$variable, levels = c('CanopyHeight',
   'Tree_Density',
   'forest_age_TC000',
   #'Depth_to_Water_Table',
@@ -325,6 +322,8 @@ deimp$variable <- factor(deimp$variable, levels = c(#'CHELSA_Temperature_Seasona
   'EarthEnvTopoMed_AspectCosine',
   
   'EarthEnvTopoMed_AspectSine',
+  
+  
   'EarthEnvTopoMed_Roughness',
   'EarthEnvTopoMed_Slope',
   'EarthEnvTopoMed_Elevation',
@@ -339,7 +338,7 @@ deimp$variable <- factor(deimp$variable, levels = c(#'CHELSA_Temperature_Seasona
   #'HumanFootprint'
   'cnRatio',
   
-  'SG_Nitrogen_Mean_0_100cm',
+  'Nitrogen',
   'SG_Absolute_depth_to_bedrock',
   #'CHELSA_Max_Temperature_of_Warmest_Month',
  
@@ -354,27 +353,29 @@ deimp$variable <- factor(deimp$variable, levels = c(#'CHELSA_Temperature_Seasona
   
   #'CHELSA_Precipitation_of_Warmest_Quarter',
   #'CHELSA_Precipitation_of_Wettest_Month',
-  'soil_moisture',
-  'SG_Sand_Content_0_100cm',
+  #'soil_moisture',
+  
   
   'SG_Coarse_fragments_0_100cm',
+  'SG_Sand_Content_0_100cm',
   'SG_Soil_pH_H2O_0_100cm',
   'SG_Clay_Content_0_100cm',
   'SG_Silt_Content_0_100cm',
   'CHELSA_Precipitation_of_Driest_Quarter',
-  'Aridity_Index',
-  'CHELSA_Precipitation_of_Wettest_Quarter',
+  #'Aridity_Index',
+ 
   
   
   
   'CHELSA_Annual_Precipitation',
   'CHELSA_Precipitation_Seasonality',
-  'PET',
-  'CHELSA_Annual_Mean_Temperature',
+  #'PET',
+   'CHELSA_Precipitation_of_Wettest_Quarter',
   'CHELSA_Mean_Diurnal_Range',
+  'CHELSA_Annual_Mean_Temperature',
   'CHELSA_Mean_Temperature_of_Coldest_Quarter',
-  'CHELSA_Mean_Temperature_of_Warmest_Quarter',
   'CHELSA_Temperature_Annual_Range',
+  'CHELSA_Mean_Temperature_of_Warmest_Quarter',
   'CHELSA_Isothermality'
   ))
 
@@ -460,10 +461,7 @@ broadsum <- broadimp %>% group_by(variable) %>%
 
 #broadimp$variable <- factor(broadimp$variable, levels = )
 
-broadimp$variable <- factor(broadimp$variable, levels = c(#'CHELSA_Temperature_Seasonality',
-
-  
-  'CanopyHeight',
+broadimp$variable <- factor(broadimp$variable, levels = c('CanopyHeight',
   'Tree_Density',
   'forest_age_TC000',
   #'Depth_to_Water_Table',
@@ -473,6 +471,8 @@ broadimp$variable <- factor(broadimp$variable, levels = c(#'CHELSA_Temperature_S
   'EarthEnvTopoMed_AspectCosine',
   
   'EarthEnvTopoMed_AspectSine',
+  
+  
   'EarthEnvTopoMed_Roughness',
   'EarthEnvTopoMed_Slope',
   'EarthEnvTopoMed_Elevation',
@@ -487,7 +487,7 @@ broadimp$variable <- factor(broadimp$variable, levels = c(#'CHELSA_Temperature_S
   #'HumanFootprint'
   'cnRatio',
   
-  'SG_Nitrogen_Mean_0_100cm',
+  'Nitrogen',
   'SG_Absolute_depth_to_bedrock',
   #'CHELSA_Max_Temperature_of_Warmest_Month',
  
@@ -502,27 +502,29 @@ broadimp$variable <- factor(broadimp$variable, levels = c(#'CHELSA_Temperature_S
   
   #'CHELSA_Precipitation_of_Warmest_Quarter',
   #'CHELSA_Precipitation_of_Wettest_Month',
-  'soil_moisture',
-  'SG_Sand_Content_0_100cm',
+  #'soil_moisture',
+  
   
   'SG_Coarse_fragments_0_100cm',
+  'SG_Sand_Content_0_100cm',
   'SG_Soil_pH_H2O_0_100cm',
   'SG_Clay_Content_0_100cm',
   'SG_Silt_Content_0_100cm',
   'CHELSA_Precipitation_of_Driest_Quarter',
-  'Aridity_Index',
-  'CHELSA_Precipitation_of_Wettest_Quarter',
+  #'Aridity_Index',
+ 
   
   
   
   'CHELSA_Annual_Precipitation',
   'CHELSA_Precipitation_Seasonality',
-  'PET',
-  'CHELSA_Annual_Mean_Temperature',
+  #'PET',
+   'CHELSA_Precipitation_of_Wettest_Quarter',
   'CHELSA_Mean_Diurnal_Range',
+  'CHELSA_Annual_Mean_Temperature',
   'CHELSA_Mean_Temperature_of_Coldest_Quarter',
-  'CHELSA_Mean_Temperature_of_Warmest_Quarter',
   'CHELSA_Temperature_Annual_Range',
+  'CHELSA_Mean_Temperature_of_Warmest_Quarter',
   'CHELSA_Isothermality'))
 
 
