@@ -92,59 +92,17 @@ library(tidyverse)
 
 
 ```{R}
-bandnames <- c('Aridity_Index',
+bandnames <- c(
   'CHELSA_Annual_Mean_Temperature',
   'CHELSA_Annual_Precipitation',
   'CHELSA_Isothermality',
-  'CHELSA_Max_Temperature_of_Warmest_Month',
   'CHELSA_Mean_Diurnal_Range',
   'CHELSA_Mean_Temperature_of_Coldest_Quarter',
-  'CHELSA_Mean_Temperature_of_Driest_Quarter',
   'CHELSA_Mean_Temperature_of_Warmest_Quarter',
-  'CHELSA_Mean_Temperature_of_Wettest_Quarter',
-  'CHELSA_Min_Temperature_of_Coldest_Month',
   'CHELSA_Precipitation_Seasonality',
-  'CHELSA_Precipitation_of_Coldest_Quarter',
-  'CHELSA_Precipitation_of_Driest_Month',
   'CHELSA_Precipitation_of_Driest_Quarter',
-  'CHELSA_Precipitation_of_Warmest_Quarter',
-  'CHELSA_Precipitation_of_Wettest_Month',
   'CHELSA_Precipitation_of_Wettest_Quarter',
-  'CHELSA_Temperature_Annual_Range',
-  'CHELSA_Temperature_Seasonality',
-  #'Depth_to_Water_Table',
-  #'EarthEnvTopoMed_Eastness',
-  #'EarthEnvTopoMed_Elevation',
-  #'EarthEnvTopoMed_Northness',
-  #'EarthEnvTopoMed_ProfileCurvature',
-  #'EarthEnvTopoMed_Roughness',
-  #'EarthEnvTopoMed_Slope'
-  'PET'
-  #'SG_Absolute_depth_to_bedrock',
-  #'WorldClim2_SolarRadiation_AnnualMean',
-  #'WorldClim2_WindSpeed_AnnualMean',
-  #'EarthEnvCloudCover_MODCF_interannualSD',
-  #'EarthEnvCloudCover_MODCF_intraannualSD',
-  #'EarthEnvCloudCover_MODCF_meanannual',
-  #'EarthEnvTopoMed_AspectCosine',
-  #'EarthEnvTopoMed_AspectSine',
-  #'SG_Clay_Content_0_100cm',
-  #'SG_Coarse_fragments_0_100cm',
-  #'SG_Sand_Content_0_100cm',
-  #'SG_Silt_Content_0_100cm',
-  #'SG_Soil_pH_H2O_0_100cm',
-  #'SG_Nitrogen_Mean_0_100cm',
-  #'cnRatio',
-  #'Tree_Density',
-  #'Human_Development_Percentage',
-  #'HumanFootprint'
-  #'soil_moisture'
-  #'soil_nitrogen'
-  #'cropland',
-  #'grazing',
-  #'Lai'
-  #"pasture",
-  #"rangeland")
+  'CHELSA_Temperature_Annual_Range'
 )
 ```
 
@@ -187,59 +145,15 @@ names(subclim) <- c('climpc1','climpc2','climpc3','climpc4','climpc5','climpc6')
 Same for soil characteristics.
 
 ```{R}
-bandnames <- c(#'Aridity_Index',
-  #'CHELSA_Annual_Mean_Temperature',
-  #'CHELSA_Annual_Precipitation',
-  #'CHELSA_Isothermality',
-  #'CHELSA_Max_Temperature_of_Warmest_Month',
-  #'CHELSA_Mean_Diurnal_Range',
-  #'CHELSA_Mean_Temperature_of_Coldest_Quarter',
-  #'CHELSA_Mean_Temperature_of_Driest_Quarter',
-  #'CHELSA_Mean_Temperature_of_Warmest_Quarter',
-  #'CHELSA_Mean_Temperature_of_Wettest_Quarter',
-  #'CHELSA_Min_Temperature_of_Coldest_Month',
-  #'CHELSA_Precipitation_Seasonality',
-  #'CHELSA_Precipitation_of_Coldest_Quarter',
-  #'CHELSA_Precipitation_of_Driest_Month',
-  #'CHELSA_Precipitation_of_Driest_Quarter',
-  #'CHELSA_Precipitation_of_Warmest_Quarter',
-  #'CHELSA_Precipitation_of_Wettest_Month',
-  #'CHELSA_Precipitation_of_Wettest_Quarter',
-  #'CHELSA_Temperature_Annual_Range',
-  #'CHELSA_Temperature_Seasonality',
-  #'Depth_to_Water_Table',
-  #'EarthEnvTopoMed_Eastness',
-  #'EarthEnvTopoMed_Elevation',
-  #'EarthEnvTopoMed_Northness',
-  #'EarthEnvTopoMed_ProfileCurvature',
-  #'EarthEnvTopoMed_Roughness',
-  #'EarthEnvTopoMed_Slope'
-  #'PET'
+bandnames <- c(
   'SG_Absolute_depth_to_bedrock',
-  #'WorldClim2_SolarRadiation_AnnualMean',
-  #'WorldClim2_WindSpeed_AnnualMean',
-  #'EarthEnvCloudCover_MODCF_interannualSD',
-  #'EarthEnvCloudCover_MODCF_intraannualSD',
-  #'EarthEnvCloudCover_MODCF_meanannual',
-  #'EarthEnvTopoMed_AspectCosine',
-  #'EarthEnvTopoMed_AspectSine',
   'SG_Clay_Content_0_100cm',
   'SG_Coarse_fragments_0_100cm',
   'SG_Sand_Content_0_100cm',
   'SG_Silt_Content_0_100cm',
   'SG_Soil_pH_H2O_0_100cm',
-  'SG_Nitrogen_Mean_0_100cm',
-  'cnRatio',
-  #'Tree_Density',
-  #'Human_Development_Percentage',
-  #'HumanFootprint'
-  'soil_moisture'
-  #'soil_nitrogen'
-  #'cropland',
-  #'grazing',
-  #'Lai'
-  #"pasture",
-  #"rangeland")
+  'Nitrogen',
+  'cnRatio'
 )
 ```
 
@@ -271,59 +185,15 @@ names(subsoil) <- c('soilpc1','soilpc2','soilpc3','soilpc4','soilpc5','soilpc6')
 Topography.
 
 ```{R}
-bandnames <- c(#'Aridity_Index',
-  #'CHELSA_Annual_Mean_Temperature',
-  #'CHELSA_Annual_Precipitation',
-  #'CHELSA_Isothermality',
-  #'CHELSA_Max_Temperature_of_Warmest_Month',
-  #'CHELSA_Mean_Diurnal_Range',
-  #'CHELSA_Mean_Temperature_of_Coldest_Quarter',
-  #'CHELSA_Mean_Temperature_of_Driest_Quarter',
-  #'CHELSA_Mean_Temperature_of_Warmest_Quarter',
-  #'CHELSA_Mean_Temperature_of_Wettest_Quarter',
-  #'CHELSA_Min_Temperature_of_Coldest_Month',
-  #'CHELSA_Precipitation_Seasonality',
-  #'CHELSA_Precipitation_of_Coldest_Quarter',
-  #'CHELSA_Precipitation_of_Driest_Month',
-  #'CHELSA_Precipitation_of_Driest_Quarter',
-  #'CHELSA_Precipitation_of_Warmest_Quarter',
-  #'CHELSA_Precipitation_of_Wettest_Month',
-  #'CHELSA_Precipitation_of_Wettest_Quarter',
-  #'CHELSA_Temperature_Annual_Range',
-  #'CHELSA_Temperature_Seasonality',
-  #'Depth_to_Water_Table',
+bandnames <- c(
   'EarthEnvTopoMed_Eastness',
   'EarthEnvTopoMed_Elevation',
   'EarthEnvTopoMed_Northness',
   'EarthEnvTopoMed_ProfileCurvature',
   'EarthEnvTopoMed_Roughness',
   'EarthEnvTopoMed_Slope',
-  #'PET'
-  #'SG_Absolute_depth_to_bedrock',
-  #'WorldClim2_SolarRadiation_AnnualMean',
-  #'WorldClim2_WindSpeed_AnnualMean',
-  #'EarthEnvCloudCover_MODCF_interannualSD',
-  #'EarthEnvCloudCover_MODCF_intraannualSD',
-  #'EarthEnvCloudCover_MODCF_meanannual',
   'EarthEnvTopoMed_AspectCosine',
   'EarthEnvTopoMed_AspectSine'
-  #'SG_Clay_Content_0_100cm',
-  #'SG_Coarse_fragments_0_100cm',
-  #'SG_Sand_Content_0_100cm',
-  #'SG_Silt_Content_0_100cm',
-  #'SG_Soil_pH_H2O_0_100cm',
-  #'SG_Nitrogen_Mean_0_100cm',
-  #'cnRatio',
-  #'Tree_Density',
-  #'Human_Development_Percentage',
-  #'HumanFootprint'
-  #'soil_moisture'
-  #'soil_nitrogen'
-  #'cropland',
-  #'grazing',
-  #'Lai'
-  #"pasture",
-  #"rangeland")
 )
 ```
 
@@ -370,6 +240,7 @@ regressionmatrix<- bind_cols(subclim,subsoil,subtopo,df.fft$broad_prop_dbh)
 names(regressionmatrix) <- c('climpc1','climpc2','climpc3','climpc4','climpc5','climpc6', 
                              'soilpc1','soilpc2','soilpc3','soilpc4','soilpc5','soilpc6',
                              'topopc1', 'topopc2', 'topopc3', 'topopc4', 'topopc5', 'topopc6',
+                             'Tree_Density', 'forest_age_TC000', 'CanopyHeight',
                              vartomodel)
 
 ```
@@ -377,7 +248,7 @@ names(regressionmatrix) <- c('climpc1','climpc2','climpc3','climpc4','climpc5','
 
 ```{R}
 
-cor.matrix <- cor(regressionmatrix[,c(1:18)], use = 'complete.obs', method = 'pearson')
+cor.matrix <- cor(regressionmatrix[,c(1:21)], use = 'complete.obs', method = 'pearson')
 cor.dist <- abs(as.dist(cor.matrix))
 cor.cluster <- hclust(1-cor.dist)
 
@@ -391,7 +262,7 @@ plot(cor.cluster)
 
 library(HH)
 
-ds <- regressionmatrix[,c(1:18)]
+ds <- regressionmatrix[,c(1:21)]
 ds <- as.data.frame(ds)
 vif(ds)
 
@@ -413,65 +284,6 @@ regmatrixh2o<-as.h2o(regressionmatrix, destination_frame = 'regMatrixH2O')
 
 Run the model
 
-
-```{R}
-rf_model<-h2o.randomForest(
-  #x = c('NDVI'),
-  y = vartomodel,
-  training_frame = regmatrixh2o,
-  ntrees = 250,
-  sample_rate = 0.632,
-  nfolds = 10,
-  min_rows = 3,
-  mtries = 3,
-  fold_assignment = 'AUTO',
-  keep_cross_validation_predictions = TRUE,
-  keep_cross_validation_fold_assignment = TRUE,
-  seed = 0
-)
-
-```
-
-
-```{R}
-p1<-h2o.varimp_plot(rf_model)
-
-t1<-h2o.varimp(rf_model)
-
-t1
-```
-
-```{R}
-h2o.r2(rf_model)
-
-
-```
-
-```{R}
-
-library(readr)
-
-write_csv(t1, 'C:\\Users\\haozh\\Desktop\\LL\\cor\\varimp_soil_topo_pc_broad.csv')
-
-```
-
-
-
-```{R}
-
-shapsummary <- h2o.shap_summary_plot(rf_model, regmatrixh2o)
-
-print(shapsummary)
-```
-
-```{R}
-head(shapsummary$data)
-
-shapdata <- shapsummary$data
-
-```
-
-
 ```{R}
 rf.params<-list(ntrees = 250,
                 mtries = c(1:12),
@@ -482,7 +294,7 @@ rf.params<-list(ntrees = 250,
 set grsearch criteria
 
 ```{R}
-search.criteria<-list(strategy = 'RandomDiscrete', max_models = 150, seed = 0, max_runtime_secs = 1800)
+search.criteria<-list(strategy = 'RandomDiscrete', max_models = 150, seed = 0, max_runtime_secs = 1200)
 ```
 
 
@@ -542,7 +354,7 @@ varip
 
 library(readr)
 
-write_csv(varip, paste0('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_broad_all',i,'_varip_20221028.csv'))
+write_csv(varip, paste0('C:\\Users\\haozh\\Desktop\\LL\\cor\\bestmodel_broad_all',i,'_varip_20230515.csv'))
 
 
 print(h2o.r2(rfmodel))
