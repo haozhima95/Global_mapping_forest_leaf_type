@@ -158,7 +158,7 @@ library(tidyverse)
 
 ```{R}
 bandnames <- c(
-  'Aridity_Index',
+  #'Aridity_Index',
   'CHELSA_Annual_Mean_Temperature',
   'CHELSA_Annual_Precipitation',
   'CHELSA_Isothermality',
@@ -185,7 +185,7 @@ bandnames <- c(
   'EarthEnvTopoMed_ProfileCurvature',
   'EarthEnvTopoMed_Roughness',
   'EarthEnvTopoMed_Slope',
-  'PET',
+  #'PET',
   'SG_Absolute_depth_to_bedrock',
   #'WorldClim2_SolarRadiation_AnnualMean',
   #'WorldClim2_WindSpeed_AnnualMean',
@@ -199,12 +199,12 @@ bandnames <- c(
   'SG_Sand_Content_0_100cm',
   'SG_Silt_Content_0_100cm',
   'SG_Soil_pH_H2O_0_100cm',
-  'SG_Nitrogen_Mean_0_100cm',
+  'Nitrogen',
   'cnRatio',
   #'Tree_Density',
   #'Human_Development_Percentage',
   #'HumanFootprint'
-  'soil_moisture',
+  #'soil_moisture',
   'forest_age_TC000',
   'Tree_Density',
   'CanopyHeight'
@@ -261,7 +261,7 @@ rf.params<-list(ntrees = 250,
 set grsearch criteria
 
 ```{R}
-search.criteria<-list(strategy = 'RandomDiscrete', max_models = 150, seed = 0, max_runtime_secs = 1800)
+search.criteria<-list(strategy = 'RandomDiscrete', max_models = 150, seed = 0, max_runtime_secs = 1200)
 ```
 
 
