@@ -160,49 +160,6 @@ names(sand) <- c('Longitude', 'Latitude', 'sand_value_avg')
 
 ```
 
-Total nitrogen content
-```{R}
-
-nitrogen <- read.csv('~/Desktop/nitrogen.csv')
-
-names(nitrogen)
-
-
-```
-
-
-```{R}
-
-nitrogen <- nitrogen %>%
-  select(c('X', 'Y', 'nitkjd_value_avg'))
-
-names(nitrogen) <- c('Longitude', 'Latitude', 'nitrogen_value_avg')
-
-```
-
-Soil coarse fragments.
-```{R}
-
-coarse_frag <- read.csv('~/Desktop/coarse_frag.csv')
-
-names(coarse_frag)
-
-
-```
-
-
-```{R}
-
-coarse_frag <- coarse_frag %>%
-  select(c('X', 'Y', 'cfvo_value_avg'))
-
-names(coarse_frag) <- c('Longitude', 'Latitude', 'coarsefrag_value_avg')
-
-```
-
-
-
-
 
 
 Run the functions with all the rest soil features. 
@@ -215,11 +172,7 @@ demosoil <- fftmatch %>%
                 soilphmin = minsoil(.,soilph),
                 soilphvalue = locator(., soilph),
                 sandmin = minsoil(.,sand),
-                sandvalue = locator(.,sand),
-                nitrogenmin = minsoil(.,nitrogen),
-                nitrogenvalue = locator(.,nitrogen),
-                coarsefragmin = minsoil(.,coarse_frag),
-                coarsefragvalue = locator(.,coarse_frag))) %>%
+                sandvalue = locator(.,sand))) %>%
   ungroup()
 
 
@@ -248,7 +201,7 @@ Filter the dataset by distance. We only remain the plots with all the soil featu
 
 ```{R}
 fftmatch <- fftmatch %>%
-  filter(claymin <= 1000 & soilphmin <= 1000 & sandmin <= 1000 & nitrogenmin <= 1000 & coarsefragmin <= 1000)
+  filter(claymin <= 1000 & soilphmin <= 1000 & sandmin <= 1000)
 
 nrow(fftmatch)
 
